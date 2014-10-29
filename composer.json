@@ -4,6 +4,6 @@
         "rmccue/requests": ">=1.0"
     },
     "config": {
-        "vendor-dir": "tools/vendor"
+        "vendor-dir": "scripts/libs/vendor"
     }
 }

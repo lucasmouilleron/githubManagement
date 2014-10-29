@@ -1,9 +1,10 @@
 <?php
 
 ////////////////////////////////////////////////////////////////
-require_once __DIR__."/tools.php";
+require_once __DIR__."/libs/tools.php";
 
 ////////////////////////////////////////////////////////////////
-getGithub("/user/repos");
+$repos = getGithub("/user/repos");
+var_dump($repos);
 
 ?>

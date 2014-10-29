@@ -16,7 +16,7 @@ Install requirements
 Install
 -------
 - `composer install`
-- `mv tools/config.php.sample tools/config.php`
+- `mv scripts/config.php.sample scripts/config.php`
 
 Architecture
 ------------
@@ -25,5 +25,5 @@ Architecture
 - `hooks/projects` : project specific web hook handlers
 - `locals` : projects locals files
 - `repos-clones` : temporary repos clones (clones for building then copying to `web`)
-- `tools` : tools (scripts, etc.)
+- `scripts` : scripts
 - `web` : web projects exports (ie the test web server root)

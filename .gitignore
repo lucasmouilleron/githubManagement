@@ -1,6 +1,6 @@
 hooks/projects
-tools/config.php
-tools/vendor
+scripts/config.php
+scripts/libs/vendor
 
 
 #################################################################################
