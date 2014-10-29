@@ -1,6 +1,5 @@
-hooks/projects
-scripts/libs/config.php
-scripts/libs/vendor
+api/config.php
+api/libs/vendor
 
 
 #################################################################################

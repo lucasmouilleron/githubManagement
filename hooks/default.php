@@ -1,1 +1,5 @@
-<?php echo "ok default";?>
+<?php 
+
+file_put_contents("./test", time());
+
+?>

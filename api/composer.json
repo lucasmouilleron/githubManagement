@@ -1,0 +1,11 @@
+{
+    "name": "githubManagement",
+    "require": {
+        "rmccue/requests": ">=1.0",
+        "slim/slim": "2.*",
+        "firebase/php-jwt": "~1.0"
+    },
+    "config": {
+        "vendor-dir": "libs/vendor"
+    }
+}
