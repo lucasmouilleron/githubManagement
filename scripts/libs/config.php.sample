@@ -1,0 +1,17 @@
+<?php
+
+///////////////////////////////////////////////////////////////////
+define("DEBUG", true);
+
+///////////////////////////////////////////////////////////////////
+define("GITHUB_API_URL", "https://api.github.com/");
+define("GITHUB_API_VERSION_HEADER", "application/vnd.github.v3+json");
+define("GITHUB_API_TOKEN", "REPLACE_WITH_TOKEN"); //https://github.com/settings/applications#personal-access-tokens
+define("GITHUB_DEFAULT_OWNER", "REPLACE_WITH_USER");
+
+///////////////////////////////////////////////////////////////////
+define("HOOKS_URL", "http://public.url.to.the.hooks.folder.com/");
+define("HOOKS_PATH", __DIR__."/../../hooks");
+define("HOOKS_DEFAULT_HOOK", "default.php");
+
+?>

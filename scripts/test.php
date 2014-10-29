@@ -4,7 +4,7 @@
 require_once __DIR__."/libs/tools.php";
 
 ////////////////////////////////////////////////////////////////
-$repos = getGithub("/user/repos");
+$repos = getGithub("user","repos");
 var_dump($repos);
 
 ?>
