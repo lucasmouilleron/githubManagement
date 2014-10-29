@@ -1,0 +1,9 @@
+{
+    "name": "githubManagement",
+    "require": {
+        "rmccue/requests": ">=1.0"
+    },
+    "config": {
+        "vendor-dir": "tools/vendor"
+    }
+}

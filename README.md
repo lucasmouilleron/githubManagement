@@ -8,6 +8,16 @@ TODO
 - import builder simplifié
 - locals files are in a folder on the test server
 
+Install requirements
+--------------------
+- `curl -sS https://getcomposer.org/installer | php`
+- `mv composer.phar /usr/local/bin/composer`
+
+Install
+-------
+- `composer install`
+- `mv tools/config.php.sample tools/config.php`
+
 Architecture
 ------------
 - `builder` : default project builder
