@@ -1,16 +1,8 @@
 /api/config.php
 /api/libs/vendor
-!/logs
-/logs/*
-!configs
-/configs/*
-!/configs/sample.json
-!/locals
-/locals/*
-!/locks
-/locks/*
-!/repos-clones
-repos-clones/*
+/configs/lucasmouilleron
+/locals/lucasmouilleron
+/repos-clones
 
 #################################################################################
 # miscs

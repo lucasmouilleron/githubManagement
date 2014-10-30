@@ -31,6 +31,9 @@ $commitSHA = "22165d62c84e3ea9de305cbc7cb9ddd4b45c3932";
 ////////////////////////////////////////////////////////////////
 // INIT
 ////////////////////////////////////////////////////////////////
+@mkdir(LOG_PATH);
+@mkdir(LOCKS_PATH);
+@mkdir(REPOS_CLONES_PATH);
 global $PROCESSOR_AVAILABLE_ENVS;
 $logger = implodeBits("-","processing",$owner,$repo);
 $notifyDests = MAIN_EMAIL;

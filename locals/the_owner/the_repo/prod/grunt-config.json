@@ -1,0 +1,11 @@
+{
+  "host": "",
+  "baseURL": "",
+  "homeURL": "",
+  "dbUser": "",
+  "dbPass": "",
+  "dbHost": "",
+  "dbName": "",
+  "mysqlPath": "",
+  "mysqldumpPath": ""
+}
