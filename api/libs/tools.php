@@ -78,6 +78,10 @@ function checkHookSignature($payload, $signature) {
 
 ////////////////////////////////////////////////////////////////
 function appendToLog($logger,$level,$message) {
+	$args = func_get_args();
+	$logger = array_shift($args);
+	$level = array_shift($args);
+	if(count($args)>1) $message = implode(" / ", $args);
 	if(is_object($message) || is_array($message)) $message = json_encode($message);
 	$message = date("Y/m/d H:i:s")." - [".$level."] - ".$message."\r\n";
 	file_put_contents(LOG_PATH."/".$logger.".log", $message, FILE_APPEND);
@@ -92,6 +96,22 @@ function getEnvFromTagName($possibleEnvs, $tagName) {
 }
 
 ////////////////////////////////////////////////////////////////
+function lock($owner,$repo) {
+	@mkdir(implodePath(LOCKS_PATH,$owner));
+	file_put_contents(implodePath(LOCKS_PATH,$owner,$repo), "locked");
+}
+
+////////////////////////////////////////////////////////////////
+function unlock($owner,$repo) {
+	unlink(implodePath(LOCKS_PATH,$owner,$repo));
+}
+
+////////////////////////////////////////////////////////////////
+function isLocked($owner,$repo) {
+	return file_exists(implodePath(LOCKS_PATH,$owner,$repo));
+}	
+
+////////////////////////////////////////////////////////////////
 function notify($to, $subject, $message) {
 	if(is_array($to)) $to = implode(", ", $to);
 	mail($to, "[".SYSTEM_NAME."] - ".$subject, $message);
@@ -99,17 +119,43 @@ function notify($to, $subject, $message) {
 
 ////////////////////////////////////////////////////////////////
 function appendToLogAndNotify($to,$logger,$level,$message) {
+	$args = func_get_args();
+	$to = array_shift($args);
+	$logger = array_shift($args);
+	$level = array_shift($args);
+	if(count($args)>1) $message = implode(" / ", $args);
 	appendToLog($logger,$level,$message);
 	notify($to,$logger."/".$level,$message);
 }
 
 ////////////////////////////////////////////////////////////////
-function getUnsetItems() {
+function fatalAndNotify($to,$logger,$level,$message) {
+	$args = func_get_args();
+	$to = array_shift($args);
+	$logger = array_shift($args);
+	$level = array_shift($args);
+	if(count($args)>1) $message = implode(" / ", $args);
+	appendToLogAndNotify($to,$logger,$level,$message);
+	fatal();
+}
+
+////////////////////////////////////////////////////////////////
+function fatal() {
+	exit(1);
+}
+
+////////////////////////////////////////////////////////////////
+function getUnsetItems($items) {
 	$unsets = array();
 	foreach (func_get_args() as $item) {
 		if(!isset($item)) $unsets[]=printVarName($item);
 	}
 	return $unsets;
+}
+
+////////////////////////////////////////////////////////////////
+function dump($var) {
+	return var_export($var,true);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -159,6 +205,27 @@ function printVarName($var) {
 		}
 	}
 	return false;
+}
+
+////////////////////////////////////////////////////////////////
+function copydir($source,$destination)
+{
+	if(!is_dir($destination)){
+		$oldumask = umask(0); 
+		mkdir($destination, 01777); 
+		umask($oldumask);
+	}
+	$dir_handle = @opendir($source);
+	if($dir_handle === false) return false;
+	while ($file = readdir($dir_handle)) 
+	{
+		if($file!="." && $file!=".." && !is_dir("$source/$file"))
+			if(!@copy("$source/$file","$destination/$file")) return false;
+		if($file!="." && $file!=".." && is_dir("$source/$file"))
+			if(!copydir("$source/$file","$destination/$file")) return false;
+	}
+	closedir($dir_handle);
+	return true;
 }
 
 ?>

@@ -1,12 +1,14 @@
 /api/config.php
 /api/libs/vendor
-!logs
+!/logs
 /logs/*
 !configs
 /configs/*
 !/configs/sample.json
 !/locals
 /locals/*
+!/locks
+/locks/*
 !/repos-clones
 repos-clones/*
 

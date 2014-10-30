@@ -66,7 +66,7 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
     $body = $app->request()->getBody();
     $signature = $app->request->headers->get(GITHUB_API_HUB_SIGNATURE);
     checkHookSignature($body, $signature);
-    if(DEBUG) appendToLog("api","info","hook signature ok ".$signature);
+    if(DEBUG) appendToLog("api",LG_INFO,"hook signature ok",$signature);
 
     $data = json_decode($body);
     $tagType = $data->ref_type;
@@ -74,22 +74,16 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
     $owner = $data->repository->owner->login;
     $repo = $data->repository->name;
     $tagName = $data->ref;
-    if(DEBUG) appendToLog("api","info",implodePath("hook",$owner,$repo,$tagName));
+    if(DEBUG) appendToLog("api",LG_INFO,"hook looks good",$owner,$repo,$tagName);
 
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","refs","tags",$tagName);
-    if(DEBUG) appendToLog("api","info",$result);
-    if(!$result["status"]) {
-        appendToLogAndNotify(HOOKS_MAIN_EMAIL,"api","error","Can't get tag infos : ".var_export($result["content"],true));
-        return;
-    }
+    if(DEBUG) appendToLog("api",LG_INFO,"recieved tag infos",$result);
+    if(!$result["status"]) fatalAndNotify(HOOKS_MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos : ".dump($result["content"]));
 
     $tagSHA = $result["content"]->object->sha;
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","tags",$tagSHA);
-    if(DEBUG) appendToLog("api","info",$result);
-    if(!$result["status"]) {
-        appendToLogAndNotify(HOOKS_MAIN_EMAIL,"api","error","Can't get tag infos : ".var_export($result["content"],true));
-        return;
-    }
+    if(DEBUG) appendToLog("api",LG_INFO,"recieved tag infos 2",$result);
+    if(!$result["status"]) fatalAndNotify(HOOKS_MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos : ".dump($result["content"]));
     
     $commitSHA = $result["content"]->object->sha;
 
@@ -97,7 +91,7 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
     $customHookPath = implodePath(HOOKS_PATH,$owner,$repo.".php");
     if(file_exists($customHookPath)) $hookPath = $customHookPath;
 
-    appendToLog("api","info","Hooking for ".implodePath($owner,$repo));
+    appendToLog("api",LG_INFO,"Hooking now ...",$owner,$repo);
     include $hookPath;
 });
 

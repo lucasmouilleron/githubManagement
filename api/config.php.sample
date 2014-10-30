@@ -3,6 +3,8 @@
 ///////////////////////////////////////////////////////////////////
 define("DEBUG", true);
 define("SYSTEM_NAME","githubManager");
+define("LG_INFO","NFO");
+define("LG_ERROR","ERR");
 
 ///////////////////////////////////////////////////////////////////
 define("LOG_PATH",__DIR__."/../logs");
@@ -10,6 +12,7 @@ define("LOCALS_PATH",__DIR__."/../locals");
 define("CONFIGS_PATH",__DIR__."/../configs");
 define("HOOKS_PATH", __DIR__."/../hooks");
 define("WEB_PATH", __DIR__."/../web");
+define("LOCKS_PATH",__DIR__."/../locks");
 define("REPOS_CLONES_PATH", __DIR__."/../repos-clones");
 define("GIT_PATH","git");
 
