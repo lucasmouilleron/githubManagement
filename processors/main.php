@@ -31,11 +31,11 @@ $commitSHA = "22165d62c84e3ea9de305cbc7cb9ddd4b45c3932";
 ////////////////////////////////////////////////////////////////
 // INIT
 ////////////////////////////////////////////////////////////////
-global $PROCESSOR_DEFAULT_AVAILABLE_ENVS;
+global $PROCESSOR_AVAILABLE_ENVS;
 $logger = implodeBits("-","processing",$owner,$repo);
 $notifyDests = MAIN_EMAIL;
 
-$env = getEnvFromTagName($PROCESSOR_DEFAULT_AVAILABLE_ENVS,$tagName);
+$env = getEnvFromTagName($PROCESSOR_AVAILABLE_ENVS,$tagName);
 if($env == false) {appendToLog($notifyDests,$logger,LG_ERROR,"Destination env is not defined, not a processor tag");fatal();}
 $projectCfg = readJSONFile(implodePath(CONFIGS_PATH,$owner,$repo.".json"));
 if($projectCfg == false) fatalAndNotify($notifyDests,$logger,LG_ERROR,"Config file not found");
