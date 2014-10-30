@@ -3,10 +3,25 @@ githubManagement
 
 TODO
 ----
-- respond on github webkhook
-- import builder simplifié
-- locals files are in a folder on the test server
-- api create tag
+- hooks/default.php : RESET AND CLONE LOCAL REPO IN repos-clones
+- hooks/default.php : building (dc builder simplified, locals files are in a folder on the test server)
+- use lucasmouilleron/testDeploy/tag1414627324/03d8ff99aba7a8f381a351d3c0c30aae13a99996/b07f87a235b7df73b35b9747560850c10ab0ca79
+
+Features
+--------
+- Github projects management and deployment
+- Relies on Github user roles and access rights
+- Small API to create tags, respond to Githib hooks, etc.
+- Hooks : default or project specific hook
+- Deployment on tag : when a deoployment tag (tag containing a specific code) is pushed or created via API, the project is deployed to the web folder
+- Miscs : loging
+
+Notes
+-----
+- Not yet compatible with Github entreprise
+- Most API calls require a Github user access token : https://github.com/settings/applications#personal-access-tokens
+- `GITHUB_MASTER_TOKEN` user must have access to all repos
+- Deployment is purposly simple. Other methods could involve branching and pushing tags to specific branches.
 
 Install requirements
 --------------------

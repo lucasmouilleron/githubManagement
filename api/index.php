@@ -33,6 +33,7 @@ $app->get("/", function() {
 //http://behindcompanies.com/2014/01/a-simple-script-for-deploying-code-with-githubs-webhooks/
 
 /////////////////////////////////////////////////////////////////
+// needs a valid Github token as extra get parameter
 $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
     $githubToken = @getGithubToken($app);
     $tagRevision = $app->request->post("tag-revision");
@@ -49,6 +50,7 @@ $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
 });
 
 /////////////////////////////////////////////////////////////////
+// needs a valid Github token as extra get parameter
 $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
     $githubToken = @getGithubToken($app);
     $token = createTokenForProject($owner,$repo);
