@@ -2,21 +2,23 @@
 
 ///////////////////////////////////////////////////////////////////
 define("DEBUG", true);
+define("LOG_PATH",__DIR__."/../logs");
 
 ///////////////////////////////////////////////////////////////////
 define("API_JWT_PRIVATE_KEY","i love kate yes");
 define("API_URL", "http://public.url.to.the.api.folder.com/");
 define("API_GITHUB_TOKEN_NAME","github-token");
 define("API_TOKEN_NAME","token");
-define("TESTS_GITHUB_TOKEN","REPLACE"); //https://github.com/settings/applications#personal-access-tokens
 
 ///////////////////////////////////////////////////////////////////
 define("HOOKS_PATH", __DIR__."/../hooks");
 define("HOOKS_DEFAULT_HOOK", "default.php");
+define("HOOKS_MAIN_EMAIL","REPLACE");
 
 ///////////////////////////////////////////////////////////////////
 define("GITHUB_API_URL", "https://api.github.com/");
 define("GITHUB_API_VERSION_HEADER", "application/vnd.github.v3+json");
 define("GITHUB_DEFAULT_OWNER", "REPLACE");
+define("GITHUB_MASTER_TOKEN","REPLACE"); //https://github.com/settings/applications#personal-access-tokens
 
 ?>

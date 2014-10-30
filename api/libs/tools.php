@@ -6,16 +6,18 @@ require_once __DIR__."/../config.php";
 
 ////////////////////////////////////////////////////////////////
 function getGithub() {
+	//file_put_contents("../log/test", "ok");
 	$params = func_get_args();
 	$token = array_shift($params);
 	$routePatams = array();
-	 foreach ($params as $param) {
-        if(!is_array($param)) $routePatams[]=$param;
-        else break;
-    }
-    $path = implode("/", $routePatams);
+	foreach ($params as $param) {
+		if(!is_array($param)) $routePatams[]=$param;
+		else break;
+	}
+	$path = implode("/", $routePatams);
 	if(DEBUG) printLine("HTTP getting URL : ".GITHUB_API_URL.$path);
 	$request = Requests::get(GITHUB_API_URL.$path, array("Accept"=>GITHUB_API_VERSION_HEADER,"Authorization"=>"token ".$token), array("verify"=>false));
+	//file_put_contents("../log/test", GITHUB_API_URL.$path);
 	$status = true;
 	if($request->status_code != 200) $status = false;
 	return array("status"=>$status,"content"=>json_decode($request->body));
@@ -27,13 +29,13 @@ function postGithub() {
 	$token = array_shift($params);
 	$data = array();
 	$routePatams = array();
-	 foreach ($params as $param) {
-        if(!is_array($param) && !startsWith($param, "{")) $routePatams[]=$param;
-        else {
-        	$data = $param; break;
-        }
-    }
-    $path = implode("/", $routePatams);
+	foreach ($params as $param) {
+		if(!is_array($param) && !startsWith($param, "{")) $routePatams[]=$param;
+		else {
+			$data = $param; break;
+		}
+	}
+	$path = implode("/", $routePatams);
 	$request = Requests::post(GITHUB_API_URL.$path, array("Accept"=>GITHUB_API_VERSION_HEADER,"Authorization"=>"token ".$token), $data, array("verify"=>false));
 	$status = true;
 	if($request->status_code != 200 && $request->status_code != 201) $status = false;
@@ -43,27 +45,27 @@ function postGithub() {
 /////////////////////////////////////////////////////////////
 function getAPIURL()
 {
-    $base_dir  = preg_replace("/libs$/", "", __DIR__);
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-    $doc_root  = preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']);
-    return rtrim($protocol.str_replace("//","/",$_SERVER["SERVER_NAME"]."/".rtrim(preg_replace("!^{$doc_root}!", '', $base_dir), "/")),"/");
+	$base_dir  = preg_replace("/libs$/", "", __DIR__);
+	$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+	$doc_root  = preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']);
+	return rtrim($protocol.str_replace("//","/",$_SERVER["SERVER_NAME"]."/".rtrim(preg_replace("!^{$doc_root}!", '', $base_dir), "/")),"/");
 }
 
  /////////////////////////////////////////////////////////////////
 function getGithubToken($app) 
 {
-    $token = null;
-    $env = $app->environment;
-    $extraParams = array();
-    parse_str($env->offsetGet("QUERY_STRING"), $extraParams);
-    if($env->offsetGet("HTTP_".strtoupper(API_GITHUB_TOKEN_NAME)) != null ) 
-    {
-        $token = $env->offsetGet("HTTP_".strtoupper(API_GITHUB_TOKEN_NAME));
-    }
-    else if (array_key_exists(API_GITHUB_TOKEN_NAME,$extraParams)) {
-        $token = $extraParams[API_GITHUB_TOKEN_NAME];
-    }
-    return $token;
+	$token = null;
+	$env = $app->environment;
+	$extraParams = array();
+	parse_str($env->offsetGet("QUERY_STRING"), $extraParams);
+	if($env->offsetGet("HTTP_".strtoupper(API_GITHUB_TOKEN_NAME)) != null ) 
+	{
+		$token = $env->offsetGet("HTTP_".strtoupper(API_GITHUB_TOKEN_NAME));
+	}
+	else if (array_key_exists(API_GITHUB_TOKEN_NAME,$extraParams)) {
+		$token = $extraParams[API_GITHUB_TOKEN_NAME];
+	}
+	return $token;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -76,6 +78,19 @@ function checkTokenForProject($owner,$repo,$token) {
 	$tokenDecoded = \JWT::decode($token, API_JWT_PRIVATE_KEY);
 	if($tokenDecoded != $owner.$repo) throw new Exception("bad");
 	return \JWT::encode($owner.$repo,API_JWT_PRIVATE_KEY);
+}
+
+////////////////////////////////////////////////////////////////
+function appendToLog($logger,$category,$message) {
+	if(is_object($message) || is_array($message)) $message = json_encode($message);
+	$message = date("Y/m/d H:i:s")." - [".$category."] - ".$message."\r\n";
+	file_put_contents(LOG_PATH."/".$logger.".log", $message, FILE_APPEND);
+}
+
+////////////////////////////////////////////////////////////////
+function notify($to, $subject, $message) {
+	if(is_array($to)) $to = implode(", ", $to);
+	mail($to, $subject, $message);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -98,7 +113,7 @@ function printLine($msg) {
 ////////////////////////////////////////////////////////////////
 function startsWith($haystack, $needle)
 {
-    return $needle === "" || strpos($haystack, $needle) === 0;
+	return $needle === "" || strpos($haystack, $needle) === 0;
 }
 
 ?>
