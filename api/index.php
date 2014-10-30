@@ -53,53 +53,51 @@ $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
 // needs a valid Github token as extra get parameter
 $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
     $githubToken = @getGithubToken($app);
-    $token = createTokenForProject($owner,$repo);
-    $url = implodePath(API_URL,"repos",$owner,$repo,"hook",$token);
-    $data = '{"name": "web", "active": true, "events": ["create"], "config": {"url": "'.$url.'", "content_type": "json"}}';
+    $url = implodePath(API_URL,"repos",$owner,$repo,"hook");
+    $data = '{"name": "web", "active": true, "events": ["create"], "config": {"url": "'.$url.'", "content_type": "json", "secret":"'.API_PRIVATE_KEY.'"}}';
     $result = postGithub($githubToken,"repos",$owner,$repo,"hooks",$data);
     echo json_encode(array("status"=>$result["status"],"hint"=>$result["content"]));
 });
 
 /////////////////////////////////////////////////////////////////
 // post from github
-$app->post("/repos/:owner/:repo/hook/:token", function($owner, $repo, $token) use ($app) {
+$app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
     
-    checkTokenForProject($owner,$repo,$token);
+    $body = $app->request()->getBody();
+    $signature = $app->request->headers->get(GITHUB_API_HUB_SIGNATURE);
+    checkHookSignature($body, $signature);
+    if(DEBUG) appendToLog("api","info","hook signature ok ".$signature);
 
-    $data = json_decode($app->request()->getBody());
+    $data = json_decode($body);
     $tagType = $data->ref_type;
     if($tagType !== "tag") return;
     $owner = $data->repository->owner->login;
     $repo = $data->repository->name;
     $tagName = $data->ref;
-    if(DEBUG) appendToLog("api","deploy",implodePath($owner,$repo,$tagName));
+    if(DEBUG) appendToLog("api","info",implodePath("hook",$owner,$repo,$tagName));
 
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","refs","tags",$tagName);
-    if(DEBUG) appendToLog("api","deploy",$result);
+    if(DEBUG) appendToLog("api","info",$result);
     if(!$result["status"]) {
-        $hint = "Can't get tag infos : ".var_export($result["content"],true);
-        appendToLog("api","deploy",$hint);
-        notify(HOOKS_MAIN_EMAIL, "Can't deploy", $hint);
+        appendToLogAndNotify(HOOKS_MAIN_EMAIL,"api","error","Can't get tag infos : ".var_export($result["content"],true));
         return;
     }
 
     $tagSHA = $result["content"]->object->sha;
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","tags",$tagSHA);
-    if(DEBUG) appendToLog("api","deploy",$result);
+    if(DEBUG) appendToLog("api","info",$result);
     if(!$result["status"]) {
-        $hint = "Can't get tag infos : ".var_export($result["content"],true);
-        appendToLog("api","deploy",$hint);
-        notify(HOOKS_MAIN_EMAIL, "Can't deploy", $hint);
+        appendToLogAndNotify(HOOKS_MAIN_EMAIL,"api","error","Can't get tag infos : ".var_export($result["content"],true));
         return;
     }
     
     $commitSHA = $result["content"]->object->sha;
 
     $hookPath = implodePath(HOOKS_PATH,HOOKS_DEFAULT_HOOK);
-    $customHookPath = implodePath(HOOKS_PATH,"projects",$owner."__".$repo.".php");
+    $customHookPath = implodePath(HOOKS_PATH,$owner,$repo.".php");
     if(file_exists($customHookPath)) $hookPath = $customHookPath;
 
-    appendToLog("api","deploy","Hooking for ".implodePath($owner,$repo));
+    appendToLog("api","info","Hooking for ".implodePath($owner,$repo));
     include $hookPath;
 });
 

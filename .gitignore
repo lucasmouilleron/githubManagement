@@ -1,7 +1,14 @@
-api/config.php
-api/libs/vendor
-api/logs
-
+/api/config.php
+/api/libs/vendor
+!logs
+/logs/*
+!configs
+/configs/*
+!/configs/sample.json
+!/locals
+/locals/*
+!/repos-clones
+repos-clones/*
 
 #################################################################################
 # miscs

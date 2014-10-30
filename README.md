@@ -5,7 +5,6 @@ TODO
 ----
 - hooks/default.php : RESET AND CLONE LOCAL REPO IN repos-clones
 - hooks/default.php : building (dc builder simplified, locals files are in a folder on the test server)
-- use lucasmouilleron/testDeploy/tag1414627324/03d8ff99aba7a8f381a351d3c0c30aae13a99996/b07f87a235b7df73b35b9747560850c10ab0ca79
 
 Features
 --------
@@ -32,12 +31,16 @@ Install
 -------
 - `cd api && composer install`
 - `mv api/config.php.sample api/config.php`
+- edit the `api/config.php` file :
+	- change `API_PRIVATE_KEY` to a random string
+	- `API_URL` is where your api is publicly http available
 
 Architecture
 ------------
 - `builder` : default project builder
 - `hooks/default.php` : default web hook handler
 - `hooks/projects` : project specific web hook handlers (hooks must be named `owner__repo.php`)
+- `configs` : projects config files
 - `locals` : projects locals files
 - `repos-clones` : temporary repos clones (clones for building then copying to `web`)
 - `api` : the public API
@@ -49,12 +52,12 @@ API Routes
 	- `POST /repos/:owner/:repo/tag` :
 	- post params : tag-revision, tag-name, tag-message
 	- get param : github-token (the github token of the user)
-	- example : `Requests::post(getAPIURL()."/repos/lucasmouilleron/testDeploy/tag?github-token=THE_USER_TOKEN", array(), array("tag-revision"=>$revision,"tag-name"=>"tag".time(),"tag-message"=>"message !"))`;
+	- example : `Requests::post(API_URL."/repos/lucasmouilleron/testDeploy/tag?github-token=THE_USER_TOKEN", array(), array("tag-revision"=>$revision,"tag-name"=>"tag".time(),"tag-message"=>"message !"))`;
 - Init deployments : 
 	- `POST /repos/:owner/:repo/hook/init`
 	- post params : none
 	- get param : github-token (the github token of the user) (use `GITHUB_MASTER_TOKEN` if called from PHP for administration purpose)
-	- example : `Requests::post(getAPIURL()."/repos/lucasmouilleron/testDeploy/hook/init?github-token=".GITHUB_MASTER_TOKEN);`
+	- example : `Requests::post(API_URL."/repos/lucasmouilleron/testDeploy/hook/init?github-token=".GITHUB_MASTER_TOKEN);`
 - Github hook : 
 	- `POST /repos/:owner/:repo/hook/:token`
 	- called by github on tag create

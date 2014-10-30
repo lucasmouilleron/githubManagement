@@ -3,10 +3,10 @@
 ////////////////////////////////////////////////////////////////
 require_once __DIR__."/vendor/autoload.php";
 require_once __DIR__."/../config.php";
+date_default_timezone_set("Europe/Paris");
 
 ////////////////////////////////////////////////////////////////
 function getGithub() {
-	//file_put_contents("../log/test", "ok");
 	$params = func_get_args();
 	$token = array_shift($params);
 	$routePatams = array();
@@ -17,7 +17,6 @@ function getGithub() {
 	$path = implode("/", $routePatams);
 	if(DEBUG) printLine("HTTP getting URL : ".GITHUB_API_URL.$path);
 	$request = Requests::get(GITHUB_API_URL.$path, array("Accept"=>GITHUB_API_VERSION_HEADER,"Authorization"=>"token ".$token), array("verify"=>false));
-	//file_put_contents("../log/test", GITHUB_API_URL.$path);
 	$status = true;
 	if($request->status_code != 200) $status = false;
 	return array("status"=>$status,"content"=>json_decode($request->body));
@@ -43,12 +42,12 @@ function postGithub() {
 }
 
 /////////////////////////////////////////////////////////////
-function getAPIURL()
+function getAPIURLOld()
 {
 	$base_dir  = preg_replace("/libs$/", "", __DIR__);
 	$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 	$doc_root  = preg_replace("!{$_SERVER['SCRIPT_NAME']}$!", '', $_SERVER['SCRIPT_FILENAME']);
-	return rtrim($protocol.str_replace("//","/",$_SERVER["SERVER_NAME"]."/".rtrim(preg_replace("!^{$doc_root}!", '', $base_dir), "/")),"/");
+	return rtrim($protocol.str_replace("//","/",$_SERVER["SERVER_NAME"].":".$_SERVER['SERVER_PORT']."/".rtrim(preg_replace("!^{$doc_root}!", '', $base_dir), "/")),"/");
 }
 
  /////////////////////////////////////////////////////////////////
@@ -69,32 +68,52 @@ function getGithubToken($app)
 }
 
 ////////////////////////////////////////////////////////////////
-function createTokenForProject($owner,$repo) {
-	return \JWT::encode($owner.$repo,API_JWT_PRIVATE_KEY);
+function checkHookSignature($payload, $signature) {
+	$test = hash_hmac("sha1",$payload,API_PRIVATE_KEY);
+	$signature = str_replace("sha1=", "", $signature);
+	if($signature != $test) {
+		throw new Exception("signatures do not match");
+	}
 }
 
 ////////////////////////////////////////////////////////////////
-function checkTokenForProject($owner,$repo,$token) {
-	$tokenDecoded = \JWT::decode($token, API_JWT_PRIVATE_KEY);
-	if($tokenDecoded != $owner.$repo) throw new Exception("bad");
-	return \JWT::encode($owner.$repo,API_JWT_PRIVATE_KEY);
-}
-
-////////////////////////////////////////////////////////////////
-function appendToLog($logger,$category,$message) {
+function appendToLog($logger,$level,$message) {
 	if(is_object($message) || is_array($message)) $message = json_encode($message);
-	$message = date("Y/m/d H:i:s")." - [".$category."] - ".$message."\r\n";
+	$message = date("Y/m/d H:i:s")." - [".$level."] - ".$message."\r\n";
 	file_put_contents(LOG_PATH."/".$logger.".log", $message, FILE_APPEND);
+}
+
+////////////////////////////////////////////////////////////////
+function getEnvFromTagName($possibleEnvs, $tagName) {
+	foreach ($possibleEnvs as $possibleEnv) {
+		if(contains($tagName,HOOKS_DEPLOY_PREFIX.$possibleEnv)) return $possibleEnv;
+	}
+	return false;
 }
 
 ////////////////////////////////////////////////////////////////
 function notify($to, $subject, $message) {
 	if(is_array($to)) $to = implode(", ", $to);
-	mail($to, $subject, $message);
+	mail($to, "[".SYSTEM_NAME."] - ".$subject, $message);
 }
 
 ////////////////////////////////////////////////////////////////
-function implodeBis() {
+function appendToLogAndNotify($to,$logger,$level,$message) {
+	appendToLog($logger,$level,$message);
+	notify($to,$logger."/".$level,$message);
+}
+
+////////////////////////////////////////////////////////////////
+function getUnsetItems() {
+	$unsets = array();
+	foreach (func_get_args() as $item) {
+		if(!isset($item)) $unsets[]=printVarName($item);
+	}
+	return $unsets;
+}
+
+////////////////////////////////////////////////////////////////
+function implodeBits() {
 	$bits = func_get_args();
 	$glue = array_shift($bits);
 	return implode($glue, $bits);
@@ -106,6 +125,17 @@ function implodePath() {
 }
 
 ////////////////////////////////////////////////////////////////
+function implodeSpace() {
+	return implode(" ", func_get_args());
+}
+
+////////////////////////////////////////////////////////////////
+function readJSONFile($filePath) {
+	if(!file_exists($filePath)) return false;
+	return json_decode(file_get_contents($filePath));
+}
+
+////////////////////////////////////////////////////////////////
 function printLine($msg) {
 	print $msg.PHP_EOL;
 }
@@ -114,6 +144,21 @@ function printLine($msg) {
 function startsWith($haystack, $needle)
 {
 	return $needle === "" || strpos($haystack, $needle) === 0;
+}
+
+////////////////////////////////////////////////////////////////
+function contains($str, $needle) {
+	return (strpos($str,$needle) !== FALSE);
+}
+
+////////////////////////////////////////////////////////////////
+function printVarName($var) {
+	foreach($GLOBALS as $var_name => $value) {
+		if ($value === $var) {
+			return $var_name;
+		}
+	}
+	return false;
 }
 
 ?>

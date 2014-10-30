@@ -2,21 +2,35 @@
 
 ///////////////////////////////////////////////////////////////////
 define("DEBUG", true);
-define("LOG_PATH",__DIR__."/../logs");
+define("SYSTEM_NAME","githubManager");
 
 ///////////////////////////////////////////////////////////////////
-define("API_JWT_PRIVATE_KEY","i love kate yes");
+define("LOG_PATH",__DIR__."/../logs");
+define("LOCALS_PATH",__DIR__."/../locals");
+define("CONFIGS_PATH",__DIR__."/../configs");
+define("HOOKS_PATH", __DIR__."/../hooks");
+define("WEB_PATH", __DIR__."/../web");
+define("REPOS_CLONES_PATH", __DIR__."/../repos-clones");
+define("GIT_PATH","git");
+
+///////////////////////////////////////////////////////////////////
+define("API_PRIVATE_KEY","i love kate yes");
 define("API_URL", "http://public.url.to.the.api.folder.com/");
 define("API_GITHUB_TOKEN_NAME","github-token");
 
 ///////////////////////////////////////////////////////////////////
-define("HOOKS_PATH", __DIR__."/../hooks");
+define("HOOKS_MAIN_EMAIL","lucas.mouilleron@me.com");
+$HOOKS_DEFAULT_AVAILABLE_ENVS = array("test","prod");
 define("HOOKS_DEFAULT_HOOK", "default.php");
-define("HOOKS_MAIN_EMAIL","REPLACE");
+define("HOOKS_DEPLOY_PREFIX","deploy-");
 
 ///////////////////////////////////////////////////////////////////
 define("GITHUB_API_URL", "https://api.github.com/");
 define("GITHUB_API_VERSION_HEADER", "application/vnd.github.v3+json");
+define("GITHUB_API_HUB_SIGNATURE", "X_HUB_SIGNATURE");
+
+///////////////////////////////////////////////////////////////////
+define("GITHUB_CLONE_PREFIX", "git@github.com:");
 define("GITHUB_DEFAULT_OWNER", "REPLACE");
 define("GITHUB_MASTER_TOKEN","REPLACE"); //https://github.com/settings/applications#personal-access-tokens
 
