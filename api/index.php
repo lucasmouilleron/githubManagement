@@ -62,7 +62,7 @@ $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
 /////////////////////////////////////////////////////////////////
 // post from github
 $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
-    
+
     $body = $app->request()->getBody();
     $signature = $app->request->headers->get(GITHUB_API_HUB_SIGNATURE);
     checkHookSignature($body, $signature);
@@ -78,21 +78,17 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
 
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","refs","tags",$tagName);
     if(DEBUG) appendToLog("api",LG_INFO,"recieved tag infos",$result);
-    if(!$result["status"]) fatalAndNotify(HOOKS_MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos : ".dump($result["content"]));
+    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos",$result["content"]);
 
     $tagSHA = $result["content"]->object->sha;
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","tags",$tagSHA);
     if(DEBUG) appendToLog("api",LG_INFO,"recieved tag infos 2",$result);
-    if(!$result["status"]) fatalAndNotify(HOOKS_MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos : ".dump($result["content"]));
+    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos",$result["content"]);
     
     $commitSHA = $result["content"]->object->sha;
 
-    $hookPath = implodePath(HOOKS_PATH,HOOKS_DEFAULT_HOOK);
-    $customHookPath = implodePath(HOOKS_PATH,$owner,$repo.".php");
-    if(file_exists($customHookPath)) $hookPath = $customHookPath;
-
-    appendToLog("api",LG_INFO,"Hooking now ...",$owner,$repo);
-    include $hookPath;
+    appendToLog("api",LG_INFO,"Processing now ...",$owner,$repo,$processorPath);
+    include impldePath(PROCESSORS_PATH,"main.php");
 });
 
 /////////////////////////////////////////////////////////////////

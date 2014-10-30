@@ -2,6 +2,7 @@
 
 ///////////////////////////////////////////////////////////////////
 define("DEBUG", true);
+define("MAIN_EMAIL","lucas.mouilleron@me.com");
 define("SYSTEM_NAME","githubManager");
 define("LG_INFO","NFO");
 define("LG_ERROR","ERR");
@@ -10,7 +11,7 @@ define("LG_ERROR","ERR");
 define("LOG_PATH",__DIR__."/../logs");
 define("LOCALS_PATH",__DIR__."/../locals");
 define("CONFIGS_PATH",__DIR__."/../configs");
-define("HOOKS_PATH", __DIR__."/../hooks");
+define("PROCESSORS_PATH", __DIR__."/../processors");
 define("WEB_PATH", __DIR__."/../web");
 define("LOCKS_PATH",__DIR__."/../locks");
 define("REPOS_CLONES_PATH", __DIR__."/../repos-clones");
@@ -22,10 +23,8 @@ define("API_URL", "http://public.url.to.the.api.folder.com/");
 define("API_GITHUB_TOKEN_NAME","github-token");
 
 ///////////////////////////////////////////////////////////////////
-define("HOOKS_MAIN_EMAIL","lucas.mouilleron@me.com");
-$HOOKS_DEFAULT_AVAILABLE_ENVS = array("test","prod");
-define("HOOKS_DEFAULT_HOOK", "default.php");
-define("HOOKS_DEPLOY_PREFIX","deploy-");
+$PROCESSOR_DEFAULT_AVAILABLE_ENVS = array("test","prod");
+define("PROCESSOR_DEPLOY_PREFIX","--process-");
 
 ///////////////////////////////////////////////////////////////////
 define("GITHUB_API_URL", "https://api.github.com/");

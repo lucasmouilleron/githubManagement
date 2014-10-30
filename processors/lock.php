@@ -1,0 +1,11 @@
+<?php
+
+////////////////////////////////////////////////////////////////
+// LOCK
+////////////////////////////////////////////////////////////////
+
+if(isLocked($owner,$repo)) fatalAndNotify($notifyDests,$logger,LG_ERROR,"Repo is locked, abort !");
+lock($owner,$repo);
+if(DEBUG) appendToLog($logger,LG_INFO,"Locked");
+
+?>

@@ -77,28 +77,28 @@ function checkHookSignature($payload, $signature) {
 }
 
 ////////////////////////////////////////////////////////////////
-function appendToLog($logger,$level,$message) {
-	$args = func_get_args();
-	$logger = array_shift($args);
-	$level = array_shift($args);
-	if(count($args)>1) $message = implode(" / ", $args);
-	if(is_object($message) || is_array($message)) $message = json_encode($message);
-	$message = date("Y/m/d H:i:s")." - [".$level."] - ".$message."\r\n";
-	file_put_contents(LOG_PATH."/".$logger.".log", $message, FILE_APPEND);
+function getProcessorName($file) {
+	return preg_replace('/\\.[^.\\s]{3,4}$/', '', basename($file));
 }
 
 ////////////////////////////////////////////////////////////////
 function getEnvFromTagName($possibleEnvs, $tagName) {
 	foreach ($possibleEnvs as $possibleEnv) {
-		if(contains($tagName,HOOKS_DEPLOY_PREFIX.$possibleEnv)) return $possibleEnv;
+		if(contains($tagName,PROCESSOR_DEPLOY_PREFIX.$possibleEnv)) return $possibleEnv;
 	}
 	return false;
+}
+
+////////////////////////////////////////////////////////////////
+function getNeedDBFromTagName($tagName) {
+	return contains($tagName,PROCESSOR_DEPLOY_DB);
 }
 
 ////////////////////////////////////////////////////////////////
 function lock($owner,$repo) {
 	@mkdir(implodePath(LOCKS_PATH,$owner));
 	file_put_contents(implodePath(LOCKS_PATH,$owner,$repo), "locked");
+	registerAutoUnlock($owner,$repo);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -109,7 +109,21 @@ function unlock($owner,$repo) {
 ////////////////////////////////////////////////////////////////
 function isLocked($owner,$repo) {
 	return file_exists(implodePath(LOCKS_PATH,$owner,$repo));
-}	
+}
+
+////////////////////////////////////////////////////////////////
+function registerAutoUnlock($owner,$repo) {
+	function shutdown($owner,$repo) {unlock($owner,$repo);}
+	register_shutdown_function("shutdown",$owner,$repo);
+}
+
+////////////////////////////////////////////////////////////////
+function run($command) {
+	$output = array();
+	$code = -1;
+	$moreOutput = exec($command.' 2>&1',$output,$code);
+	return array("code"=>$code,"output"=>$output,"success"=>($code==0));
+}
 
 ////////////////////////////////////////////////////////////////
 function notify($to, $subject, $message) {
@@ -118,12 +132,22 @@ function notify($to, $subject, $message) {
 }
 
 ////////////////////////////////////////////////////////////////
+function appendToLog($logger,$level,$message) {
+	$args = func_get_args();
+	$logger = array_shift($args);
+	$level = array_shift($args);
+	$message = messageForLogFromArgs($args);
+	$message = date("Y/m/d H:i:s")." - [".$level."] - ".$message."\r\n";
+	file_put_contents(LOG_PATH."/".$logger.".log", $message, FILE_APPEND);
+}
+
+////////////////////////////////////////////////////////////////
 function appendToLogAndNotify($to,$logger,$level,$message) {
 	$args = func_get_args();
 	$to = array_shift($args);
 	$logger = array_shift($args);
 	$level = array_shift($args);
-	if(count($args)>1) $message = implode(" / ", $args);
+	$message = messageForLogFromArgs($args);
 	appendToLog($logger,$level,$message);
 	notify($to,$logger."/".$level,$message);
 }
@@ -134,9 +158,16 @@ function fatalAndNotify($to,$logger,$level,$message) {
 	$to = array_shift($args);
 	$logger = array_shift($args);
 	$level = array_shift($args);
-	if(count($args)>1) $message = implode(" / ", $args);
+	$message = messageForLogFromArgs($args);
 	appendToLogAndNotify($to,$logger,$level,$message);
 	fatal();
+}
+
+////////////////////////////////////////////////////////////////
+function messageForLogFromArgs($args) {
+	array_walk($args, function(&$val){if(is_object($val) || is_array($val)) {$val = json_encode($val);}});
+	$message = implode(" / ", $args);
+	return str_replace("\n"," ",$message);
 }
 
 ////////////////////////////////////////////////////////////////
