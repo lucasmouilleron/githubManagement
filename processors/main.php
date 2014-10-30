@@ -11,6 +11,15 @@ require_once __DIR__."/../api/libs/tools.php";
 // $commitSHA
 
 ////////////////////////////////////////////////////////////////
+// ADDITIONAL VARIABLES AVAILABLE IN SUB PROCESSORS
+// $logger : the logger name
+// $notifyDests : the notify recievers
+// $env : the destination env
+// $projectCfg : the project config (json -> object)
+// $repoClonePath : the cloned repo path
+// $repoCloneContainerPath : the parent of the cloned repo path
+
+////////////////////////////////////////////////////////////////
 // TESTS
 ////////////////////////////////////////////////////////////////
 $owner = "lucasmouilleron";
