@@ -23,7 +23,7 @@ Triggering
 - Tag name syntax : `.*--deploy-ENV.*`
 - ENVS are defined in `$PROCESSOR_AVAILABLE_ENVS` in `api/config.php`
 - Wheter the tag is created from the API or from a local repo (and then pushed), the processing will be triggered
-- For the tag to trigger processor, a webhook must be set on the repo. Our small API can take care of it. cf [#routes](Route 'Init processing')
+- For the tag to trigger processor, a webhook must be set on the repo. Our small API can take care of it. cf [Route 'Init processing'](#routes)
 
 Processors
 ----------
