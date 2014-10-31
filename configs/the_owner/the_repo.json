@@ -1,0 +1,32 @@
+{
+   "processors":["lock","clone","locals","build","deploy-files","deploy-db"],
+   "processorsConfigs":{
+      "notifyRecipients":[
+         "dev@dev.com"
+      ],
+      "deployFolder":"web",
+      "buildFile":"build.sh",
+      "DBPath":"db/db.sql",
+      "localsPath":"local",
+      "envConfigs":{
+         "test":{
+            "process":true,
+            "basePath":"/path/to/folder",
+            "SSHURI":"user@host.com",
+            "DBUser":"root",
+            "DBPassword":"root",
+            "DBName":"test",
+            "DBBinary":"/usr/local/mysql/bin/mysql"
+         },
+         "prod":{
+            "process":false,
+            "basePath":"/path/to/other-folder",
+            "SSHURI":"user@other-host.com",
+            "DBUser":"root",
+            "DBPassword":"root",
+            "DBName":"test",
+            "DBBinary":"/usr/bin/mysql"
+         }
+      }
+   }
+}
