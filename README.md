@@ -68,6 +68,7 @@ Tests
 - API tests : `http://public.url.to.the.api.folder.com/tests/api-tests.php`
 - Processors tests : `php tests/processors-test.php`
 - In production mode, use a htaccess or remove this folder
+- Debug tip : `tail -f processing-owner-repo.log` and `tail -f api.log`
 
 Notes
 -----
@@ -88,9 +89,12 @@ Install
 - edit the `api/config.php` file :
 	- change `API_PRIVATE_KEY` to a random string
 	- set `APACHE_HOME` to an existing folder and make sure Apache can write in it
+	- set `ENV_PATH` so it contains all binaries that might be called from processors (rsync, scp, git), or build files (npm, grunt, etc.)
 	- `API_URL` is where your api is publicly http available
+	- set `DEBUG` to `false` in production mode
 - Test : `http://public.url.to.the.api.folder.com`
 
 TODO
 ----
+- better capture exec ouput un tools->run()
 - log cleanup

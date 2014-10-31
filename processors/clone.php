@@ -23,6 +23,6 @@ else {
 }
 
 $result = run("cd",$repoClonePath,"&&",GIT_PATH,"show","--pretty='format:'","--name-only",$commitSHA,"|","sort","|","uniq");
-$notifyMessages[]=implodeBits(" : ","Diff files",implode("\n\r",$result["output"]));
+if(is_array($result["output"])) $notifyMessages[]=implodeBits(" : ","Diff files",implode("\n\r",$result["output"]));
 
 ?>

@@ -34,6 +34,7 @@ require_once __DIR__."/../api/libs/tools.php";
 @mkdir(LOCKS_PATH);
 @mkdir(REPOS_CLONES_PATH);
 putenv("HOME=".APACHE_HOME);
+putenv("PATH=".ENV_PATH);
 global $PROCESSOR_AVAILABLE_ENVS;
 $logger = implodeBits("-","processing",$owner,$repo);
 $fullRepo = implodePath($owner,$repo);

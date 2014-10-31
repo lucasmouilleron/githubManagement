@@ -5,6 +5,7 @@ define("DEBUG", true);
 define("MAIN_EMAIL","lucas.mouilleron@me.com");
 define("SYSTEM_NAME","githubManager");
 define("APACHE_HOME","/home/www");
+define("ENV_PATH","/opt/local/bin:/opt/local/sbin");
 define("LG_INFO","NFO");
 define("LG_ERROR","ERR");
 define("LG_FATAL","FTL");
