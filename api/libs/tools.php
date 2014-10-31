@@ -121,7 +121,13 @@ function registerAutoUnlock($owner,$repo) {
 function run($command) {
 	$output = array();
 	$code = -1;
-	$moreOutput = exec($command.' 2>&1',$output,$code);
+	$args = func_get_args();
+	if(count($args)>1) $command = implode(" ",$args);
+	ob_start();
+	$moreOutput = exec($command,$output,$code);
+	$moremoreoutput = ob_get_clean();
+	$ouput[]=$moreOutput;
+	$ouput[]=$moremoreoutput;
 	return array("code"=>$code,"output"=>$output,"success"=>($code==0));
 }
 

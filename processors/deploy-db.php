@@ -1,7 +1,22 @@
 <?php
 
 ////////////////////////////////////////////////////////////////
-// DEPLOY DB IF NEEDED
+// DEPLOY DB
+////////////////////////////////////////////////////////////////
+// Sends the DB to the env remote. Runs it. Delete it.
+// For flexibility reason, the string `--db` must be included in the tag name for the processor to run.
+// Make sure you sent your public key to the remove ENV (for scp to run not interactively).
+// mySQL support only.
+////////////////////////////////////////////////////////////////
+// processorsConfigs->envConfigs->{$env}->SSHURI(*) : the remote ssh uri
+// processorsConfigs->envConfigs->{$env}->DBUser(*) : the remote db user
+// processorsConfigs->envConfigs->{$env}->DBPassword(*) : the remove db password
+// processorsConfigs->envConfigs->{$env}->DBName(*) : the remote db name
+// processorsConfigs->envConfigs->{$env}->DBBinary(*) : the remote db binary
+// processorsConfigs->envConfigs->{$env}->basePath(*) : the remote base path (to drop the tmp db file)
+// processorsConfigs->DBPath(*) : the path to the db file in the repo
+////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////
 $envSSHURI = @$projectCfg->processorsConfigs->envConfigs->{$env}->SSHURI;
 $envDBUser = @$projectCfg->processorsConfigs->envConfigs->{$env}->DBUser;
@@ -16,13 +31,13 @@ if(!empty($unsetItems)) fatalAndNotify($notifyDests,$loggerfatalAndNotify,"Deplo
 if(getNeedDBFromTagName($tagName)) {
 	if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"DB config properties are not all set :",$unsetItems);
 	$tmpDBPath = implodePath($envBasePath,"--tmp-db.sql");
-	$result = run(implodeSpace("scp",implodePath($repoClonePath,$DBPath),$envSSHURI.":".$tmpDBPath));
+	$result = run("scp",implodePath($repoClonePath,$DBPath),$envSSHURI.":".$tmpDBPath);
 	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't send db file",$result["output"]);
 	if(DEBUG) appendToLog($logger,LG_INFO,"DB sent",$result["output"]);
-	$result = run(implodeSpace("ssh",$envSSHURI,"\"",$envDBBinary,"--user=".$envDBUser,"--password=".$envDBPassword,$envDBName,"<",$tmpDBPath,"\""));
+	$result = run("ssh",$envSSHURI,"\"",$envDBBinary,"--user=".$envDBUser,"--password=".$envDBPassword,$envDBName,"<",$tmpDBPath,"\"");
 	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't run db file",$result["output"]);
 	if(DEBUG) appendToLog($logger,LG_INFO,"DB ran",$result["output"]);
-	$result = run(implodeSpace("ssh",$envSSHURI,"\"","rm",$tmpDBPath,"\""));
+	$result = run("ssh",$envSSHURI,"\"","rm",$tmpDBPath,"\"");
 	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't delete db file",$result["output"]);
 	if(DEBUG) appendToLog($logger,LG_INFO,"DB deleted",$result["output"]);
 }

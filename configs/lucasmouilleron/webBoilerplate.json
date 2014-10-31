@@ -1,0 +1,24 @@
+{
+   "processors":["lock","clone","envs-assets","build","deploy-files","notify"],
+   "processorsConfigs":{
+      "notifyRecipients":[
+         "lucas.mouilleron@me.com"
+      ],
+      "deployFolder":".",
+      "buildCommand":"cd _build && npm install && grunt build",
+      "envAssetsPath":"local",
+      "excludeFiles":[".git*","_dev/*","_build/*"],
+      "envConfigs":{
+         "test":{
+            "process":true,
+            "basePath":"/Users/lucas/Desktop/githubManagement/testWebBoilerplate",
+            "SSHURI":"lucas@lucas.haveidols.com"
+         },
+         "prod":{
+            "process":false,
+            "basePath":"/Users/other/www/testWebBoilerplate",
+            "SSHURI":"other@other.com"
+         }
+      }
+   }
+}

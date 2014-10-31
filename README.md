@@ -16,7 +16,7 @@ Architecture
 - `envs-assets` : projects env specific assets
 - `locks`: the locks folder
 - `processors` : the processors
-- `repos-clones` : temporary repos clones (clones for building then copying to `web`)
+- `clones` : temporary repos clones (clones for building then copying to `web`)
 
 Users management
 ----------------
@@ -33,35 +33,9 @@ Triggering
 
 Processors
 ----------
-### Main
-- The main processor, always called first
-- Variables availables to sub processors are listed in the commented header section
-
-### Lock
-- Forbids concurrent processings untill the current one is finished
-- Auto released when the processing is finished
-
-### Clone
-- Clones (or pull + reset) the repo to the `repos-clones` folder
-
-### Envs-assets
-- Copies project env assets files from `envs-assets/owner/repo/ENV` to `repos-clones/owner/repo/$envAssetsPath`
-- Convenient if some parameters are diffrent from one env to the other
-- In this case, isolate these parameters in some files which are copied depending on what ENV is targeted
-
-### Build
-- Runs a build file for the project
-- The build file is an executable script or app (must be runnable)
-
-### Deploy-files
-- Sends the files to the remove env ENV
-- The `$deployFolder` is sent to the `$envBasePath`
-- Make sure you sent your public key to the remove ENV (for rsync to run not interactively)
-
-### Deploy-db
-- Sends and runs the DB on the remote env ENV
-- For flexibility reason, the string `--db` must be included in the tag name for the processor to run
-- Make sure you sent your public key to the remove ENV (for scp to run not interactively)
+- The available processors are located in `processors`
+- Processors docs can be found in the headers of the `processors/*` files
+- The `main` processor is called first and calls the next processors configured in `configs/owner/repo.json->processors`
 
 API
 ---
@@ -113,6 +87,7 @@ Install
 - `mv api/config.php.sample api/config.php`
 - edit the `api/config.php` file :
 	- change `API_PRIVATE_KEY` to a random string
+	- set `APACHE_HOME` to an existing folder and make sure Apache can write in it
 	- `API_URL` is where your api is publicly http available
 - Test : `http://public.url.to.the.api.folder.com`
 

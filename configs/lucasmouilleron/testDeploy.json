@@ -20,8 +20,8 @@
          },
          "prod":{
             "process":false,
-            "basePath":"/Users/lmouille/Desktop/test/testDeploy",
-            "SSHURI":"www-data@thor.diplomatic-cover.com",
+            "basePath":"/Users/other/www/testDeploy",
+            "SSHURI":"other@other.com",
             "DBUser":"root",
             "DBPassword":"root",
             "DBName":"testDeploy",

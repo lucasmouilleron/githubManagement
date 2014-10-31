@@ -1,8 +1,6 @@
 /api/config.php
 /api/libs/vendor
-/configs/lucasmouilleron
-/envs-assets/lucasmouilleron
-/repos-clones
+/clones
 
 #################################################################################
 # miscs

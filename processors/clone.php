@@ -1,12 +1,15 @@
 <?php
 
 ////////////////////////////////////////////////////////////////
-// CLONE (OR PULL + RESET)
+// CLONE
+////////////////////////////////////////////////////////////////
+// Clones the project for a commit.
+// If the clone already exists, pull and reset to commit.
 ////////////////////////////////////////////////////////////////
 
 if(!file_exists($repoClonePath)) {
 	@mkdir($repoCloneContainerPath);
-	$result = run(implodeSpace("cd",$repoCloneContainerPath,"&&",GIT_PATH,"clone",GITHUB_CLONE_PREFIX.implodePath($owner,$repo)));
+	$result = run("cd",$repoCloneContainerPath,"&&",GIT_PATH,"clone",GITHUB_CLONE_PREFIX.implodePath($owner,$repo));
 	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't clone repo",$result["output"]);
 	appendToLog($logger,LG_INFO,"Repo cloned");
 }
@@ -19,7 +22,7 @@ else {
 	appendToLog($logger,LG_INFO,"Repo reseted",$commitSHA);
 }
 
-$result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"show","--pretty='format:'","--name-only",$commitSHA,"|","sort","|","uniq"));
+$result = run("cd",$repoClonePath,"&&",GIT_PATH,"show","--pretty='format:'","--name-only",$commitSHA,"|","sort","|","uniq");
 $notifyMessages[]=implodeBits(" : ","Diff files",implode("\n\r",$result["output"]));
 
 ?>

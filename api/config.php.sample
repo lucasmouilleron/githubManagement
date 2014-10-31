@@ -4,6 +4,7 @@
 define("DEBUG", true);
 define("MAIN_EMAIL","lucas.mouilleron@me.com");
 define("SYSTEM_NAME","githubManager");
+define("APACHE_HOME","/home/www");
 define("LG_INFO","NFO");
 define("LG_ERROR","ERR");
 define("LG_FATAL","FTL");
@@ -14,7 +15,7 @@ define("ENV_ASSETS_PATH",__DIR__."/../envs-assets");
 define("CONFIGS_PATH",__DIR__."/../configs");
 define("PROCESSORS_PATH", __DIR__."/../processors");
 define("LOCKS_PATH",__DIR__."/../locks");
-define("REPOS_CLONES_PATH", __DIR__."/../repos-clones");
+define("REPOS_CLONES_PATH", __DIR__."/../clones");
 define("GIT_PATH","git");
 
 ///////////////////////////////////////////////////////////////////
