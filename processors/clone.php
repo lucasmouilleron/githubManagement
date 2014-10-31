@@ -19,4 +19,7 @@ else {
 	appendToLog($logger,LG_INFO,"Repo reseted",$commitSHA);
 }
 
+$result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"show","--pretty='format:'","--name-only",$commitSHA,"|","sort","|","uniq"));
+$notifyMessages[]=implodeBits(" : ","Diff files",implode("\n\r",$result["output"]));
+
 ?>

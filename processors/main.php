@@ -15,8 +15,10 @@ require_once __DIR__."/../api/libs/tools.php";
 // ADDITIONAL VARIABLES AVAILABLE IN SUB PROCESSORS
 // $logger : the logger name
 // $notifyDests : the notify recievers
+// $notifyMessages : array of messages to be sent by the notify processor
 // $env : the destination env
 // $projectCfg : the project config (json -> object)
+// $fullRepo : the full repo name (owner/repo)
 // $repoClonePath : the cloned repo path
 // $repoCloneContainerPath : the parent of the cloned repo path
 
@@ -34,7 +36,9 @@ require_once __DIR__."/../api/libs/tools.php";
 putenv("HOME=/");
 global $PROCESSOR_AVAILABLE_ENVS;
 $logger = implodeBits("-","processing",$owner,$repo);
+$fullRepo = implodePath($owner,$repo);
 $notifyDests = MAIN_EMAIL;
+$notifyMessages = array();
 
 $env = getEnvFromTagName($PROCESSOR_AVAILABLE_ENVS,$tagName);
 if($env == false) {appendToLog($logger,LG_INFO,"Destination env is not defined, not a processor tag",$tagName);fatal();}
@@ -51,7 +55,9 @@ if(isset($projectCfg->processorsConfigs->notifyRecipients)) $notifyDests = $proj
 ////////////////////////////////////////////////////////////////
 // RUN PROCESSORS
 ////////////////////////////////////////////////////////////////
-appendToLog($logger,LG_INFO,"Begining processing","owner:",$owner,"repo:",$repo,"tagName:",$tagName,"tagSHA:",$tagSHA,"commitSHA:",$commitSHA,"env:",$env);
+appendToLog($logger,LG_INFO,"Begining processing","owner",$owner,"repo",$repo,"tagName",$tagName,"tagSHA",$tagSHA,"commitSHA",$commitSHA,"env",$env);
+$notifyMessages[]=implodeBits(" / ","Processed : ","owner",$owner,"repo",$repo,"tagName",$tagName,"tagSHA",$tagSHA,"commitSHA",$commitSHA,"env",$env);
+
 $processors = $projectCfg->processors;
 if(!isset($processors)) $processors = array();
 foreach ($processors as $processor) {
