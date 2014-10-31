@@ -43,10 +43,10 @@ $notifyMessages = array();
 $env = getEnvFromTagName($PROCESSOR_AVAILABLE_ENVS,$tagName);
 if($env == false) {appendToLog($logger,LG_INFO,"Destination env is not defined, not a processor tag",$tagName);fatal();}
 $projectCfg = readJSONFile(implodePath(CONFIGS_PATH,$owner,$repo.".json"));
-if($projectCfg == false) fatalAndNotify($notifyDests,$logger,LG_ERROR,"Config file not found");
+if($projectCfg == false) fatalAndNotify($notifyDests,$logger,"Config file not found");
 
 $envProcess = @$projectCfg->processorsConfigs->envConfigs->{$env}->process;
-if(!isset($envProcess) || !$envProcess) fatalAndNotify($notifyDests,$logger,LG_ERROR,"Processing is not activated");
+if(!isset($envProcess) || !$envProcess) fatalAndNotify($notifyDests,$logger,"Processing is not activated");
 
 $repoClonePath = implodePath(REPOS_CLONES_PATH,$owner,$repo);
 $repoCloneContainerPath = implodePath(REPOS_CLONES_PATH,$owner);

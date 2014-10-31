@@ -11,12 +11,12 @@ Features
 
 Architecture
 ------------
-- `processors` : the processors
-- `configs` : projects config files
-- `locals` : projects locals files
-- `repos-clones` : temporary repos clones (clones for building then copying to `web`)
 - `api` : the public API
+- `configs` : projects config files
+- `envs-assets` : projects env specific assets
 - `locks`: the locks folder
+- `processors` : the processors
+- `repos-clones` : temporary repos clones (clones for building then copying to `web`)
 
 Users management
 ----------------
@@ -44,8 +44,8 @@ Processors
 ### Clone
 - Clones (or pull + reset) the repo to the `repos-clones` folder
 
-### Locals
-- Copies project local files from `locals/owner/repo/ENV` to `repos-clones/owner/repo/$localsPath`
+### Envs-assets
+- Copies project env assets files from `envs-assets/owner/repo/ENV` to `repos-clones/owner/repo/$envAssetsPath`
 - Convenient if some parameters are diffrent from one env to the other
 - In this case, isolate these parameters in some files which are copied depending on what ENV is targeted
 

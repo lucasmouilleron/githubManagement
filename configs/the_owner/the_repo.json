@@ -1,5 +1,5 @@
 {
-   "processors":["lock","specific/test","clone","locals","build","deploy-files","deploy-db","notify"],
+   "processors":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"],
    "processorsConfigs":{
       "notifyRecipients":[
          "lucas.mouilleron@me.com"
@@ -7,7 +7,7 @@
       "deployFolder":"web",
       "buildFile":"build.sh",
       "DBPath":"db/db.sql",
-      "localsPath":"local",
+      "envAssetsPath":"local",
       "envConfigs":{
          "test":{
             "process":true,

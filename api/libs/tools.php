@@ -153,13 +153,12 @@ function appendToLogAndNotify($to,$logger,$level,$message) {
 }
 
 ////////////////////////////////////////////////////////////////
-function fatalAndNotify($to,$logger,$level,$message) {
+function fatalAndNotify($to,$logger,$message) {
 	$args = func_get_args();
 	$to = array_shift($args);
 	$logger = array_shift($args);
-	$level = array_shift($args);
 	$message = messageForLogFromArgs($args);
-	appendToLogAndNotify($to,$logger,$level,$message);
+	appendToLogAndNotify($to,$logger,LG_FATAL,$message);
 	fatal();
 }
 

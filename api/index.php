@@ -79,12 +79,12 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
 
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","refs","tags",$tagName);
     if(DEBUG) appendToLog("api",LG_INFO,"recieved tag infos",$result);
-    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos",$result["content"]);
+    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api","Can't get tag infos",$result["content"]);
 
     $tagSHA = $result["content"]->object->sha;
     $result = getGithub(GITHUB_MASTER_TOKEN,"repos",$owner,$repo,"git","tags",$tagSHA);
     if(DEBUG) appendToLog("api",LG_INFO,"recieved tag infos 2",$result);
-    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api",LG_ERROR,"Can't get tag infos",$result["content"]);
+    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api","Can't get tag infos",$result["content"]);
     
     $commitSHA = $result["content"]->object->sha;
 
