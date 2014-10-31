@@ -57,6 +57,8 @@ Processors
 API
 ---
 ### Overview
+- The API is used to respond to the Github webhook
+- It can be used as well to init the webhook config or create tags (without clone the project !)
 - Most API calls require a Github user access token : https://github.com/settings/applications#personal-access-tokens
 - `GITHUB_MASTER_TOKEN` user must have access to all repos
 
