@@ -259,4 +259,27 @@ function copydir($source,$destination)
 	return true;
 }
 
+////////////////////////////////////////////////////////////////
+function listFiles($folder, $removedFolders=false, $removeRoot=false, $removeDotted=true) {
+	$iter = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($folder, RecursiveDirectoryIterator::SKIP_DOTS),RecursiveIteratorIterator::SELF_FIRST,RecursiveIteratorIterator::CATCH_GET_CHILD);
+	$paths = array($folder);
+	foreach ($iter as $path => $dir) {
+		$paths[] = $path;
+	}
+	$finalPaths = array();
+	foreach($paths as $path) {
+		if($removedFolders && is_dir($path)) continue;
+		if($removeDotted && startsWith(basename($path),".")) continue;
+		if($removeRoot) $path = str_replace($folder, "", $path);
+		$finalPaths[]= $path;
+	}
+	return $finalPaths;
+}
+
+////////////////////////////////////////////////////////////////
+function removeExtensions($files) {
+	array_walk($files, function(&$val){$val = preg_replace('/\.[^.]+$/','',$val);});
+	return $files;
+}
+
 ?>

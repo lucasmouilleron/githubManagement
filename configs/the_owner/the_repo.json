@@ -1,8 +1,8 @@
 {
-   "processors":["lock","clone","locals","build","deploy-files","deploy-db"],
+   "processors":["lock","specific/test","clone","locals","build","deploy-files","deploy-db"],
    "processorsConfigs":{
       "notifyRecipients":[
-         "dev@dev.com"
+         "lucas.mouilleron@me.com"
       ],
       "deployFolder":"web",
       "buildFile":"build.sh",
@@ -11,20 +11,20 @@
       "envConfigs":{
          "test":{
             "process":true,
-            "basePath":"/path/to/folder",
-            "SSHURI":"user@host.com",
+            "basePath":"/Users/lucas/Desktop/githubManagement/testDeploy",
+            "SSHURI":"lucas@lucas.haveidols.com",
             "DBUser":"root",
             "DBPassword":"root",
-            "DBName":"test",
+            "DBName":"testDeploy",
             "DBBinary":"/usr/local/mysql/bin/mysql"
          },
          "prod":{
             "process":false,
-            "basePath":"/path/to/other-folder",
-            "SSHURI":"user@other-host.com",
+            "basePath":"/Users/lmouille/Desktop/test/testDeploy",
+            "SSHURI":"www-data@thor.diplomatic-cover.com",
             "DBUser":"root",
             "DBPassword":"root",
-            "DBName":"test",
+            "DBName":"testDeploy",
             "DBBinary":"/usr/bin/mysql"
          }
       }

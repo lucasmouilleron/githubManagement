@@ -47,6 +47,11 @@ $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
 });
 
 /////////////////////////////////////////////////////////////////
+$app->get("/repos", function() use ($app) {
+    echo json_encode(removeExtensions(listFiles(CONFIGS_PATH,true,true)));
+});
+
+/////////////////////////////////////////////////////////////////
 // needs a valid Github token as extra get parameter
 $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
     $githubToken = @getGithubToken($app);
@@ -59,7 +64,6 @@ $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
 /////////////////////////////////////////////////////////////////
 // hook post from github
 $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
-
     $body = $app->request()->getBody();
     $signature = $app->request->headers->get(GITHUB_API_HUB_SIGNATURE);
     checkHookSignature($body, $signature);

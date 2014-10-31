@@ -21,6 +21,11 @@ require_once __DIR__."/../api/libs/tools.php";
 // $repoCloneContainerPath : the parent of the cloned repo path
 
 ////////////////////////////////////////////////////////////////
+// FUNCTIONS AVAILABLE
+// All PHP
+// + api/libs/tools.php
+
+////////////////////////////////////////////////////////////////
 // INIT
 ////////////////////////////////////////////////////////////////
 @mkdir(LOG_PATH);
@@ -50,8 +55,13 @@ appendToLog($logger,LG_INFO,"Begining processing","owner:",$owner,"repo:",$repo,
 $processors = $projectCfg->processors;
 if(!isset($processors)) $processors = array();
 foreach ($processors as $processor) {
+    $processorPath = implodePath(PROCESSORS_PATH,$processor.".php");
+    if(!file_exists($processorPath)) {
+        appendToLog($logger,LG_ERROR, "Processor not found",$processor);
+        continue;
+    }
 	appendToLog($logger,LG_INFO,"Running processor",$processor);
-	include implodePath(PROCESSORS_PATH,$processor.".php");
+	include $processorPath;
 	appendToLog($logger,LG_INFO,"Processor finished",$processor);
 }
 if(DEBUG) appendToLog($logger,LG_INFO,"No more processors to run");
