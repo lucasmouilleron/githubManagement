@@ -20,26 +20,18 @@ require_once __DIR__."/../api/libs/tools.php";
 // $repoCloneContainerPath : the parent of the cloned repo path
 
 ////////////////////////////////////////////////////////////////
-// TESTS
-////////////////////////////////////////////////////////////////
-$owner = "lucasmouilleron";
-$repo = "testDeploy";
-$tagName = "--process-test1234--db";
-$tagSHA = "03d8ff99aba7a8f381a351d3c0c30aae13a99996";
-$commitSHA = "22165d62c84e3ea9de305cbc7cb9ddd4b45c3932";
-
-////////////////////////////////////////////////////////////////
 // INIT
 ////////////////////////////////////////////////////////////////
 @mkdir(LOG_PATH);
 @mkdir(LOCKS_PATH);
 @mkdir(REPOS_CLONES_PATH);
+putenv("HOME=/");
 global $PROCESSOR_AVAILABLE_ENVS;
 $logger = implodeBits("-","processing",$owner,$repo);
 $notifyDests = MAIN_EMAIL;
 
 $env = getEnvFromTagName($PROCESSOR_AVAILABLE_ENVS,$tagName);
-if($env == false) {appendToLog($notifyDests,$logger,LG_ERROR,"Destination env is not defined, not a processor tag");fatal();}
+if($env == false) {appendToLog($logger,LG_INFO,"Destination env is not defined, not a processor tag",$tagName);fatal();}
 $projectCfg = readJSONFile(implodePath(CONFIGS_PATH,$owner,$repo.".json"));
 if($projectCfg == false) fatalAndNotify($notifyDests,$logger,LG_ERROR,"Config file not found");
 

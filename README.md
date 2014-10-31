@@ -92,3 +92,7 @@ Install
 - edit the `api/config.php` file :
 	- change `API_PRIVATE_KEY` to a random string
 	- `API_URL` is where your api is publicly http available
+
+TODO
+----
+- log cleanup

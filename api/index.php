@@ -29,9 +29,6 @@ $app->get("/", function() {
     echo json_encode(array("status"=>true));
 });
 
-//http://fideloper.com/node-github-autodeploy
-//http://behindcompanies.com/2014/01/a-simple-script-for-deploying-code-with-githubs-webhooks/
-
 /////////////////////////////////////////////////////////////////
 // needs a valid Github token as extra get parameter
 $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
@@ -41,7 +38,7 @@ $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
     $tagMessage = $app->request->post("tag-message");
     $data = '{"tag": "'.$tagName.'","message": "'.$tagMessage.'","object": "'.$tagRevision.'","type": "commit"}';
     $result = postGithub($githubToken,"repos",$owner,$repo,"git","tags",$data);
-    if(!$result["status"]) echo json_encode(array("status"=>$result["status"],"hint"=>$result["content"]));
+    if(!$result["status"]) {echo json_encode(array("status"=>$result["status"],"hint"=>$result["content"]));die();};
 
     $tagSHA = $result["content"]->sha;
     $data = '{"ref": "refs/tags/'.$tagName.'","sha": "'.$tagSHA.'"}';
@@ -60,7 +57,7 @@ $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
 });
 
 /////////////////////////////////////////////////////////////////
-// post from github
+// hook post from github
 $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
 
     $body = $app->request()->getBody();
@@ -87,8 +84,8 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
     
     $commitSHA = $result["content"]->object->sha;
 
-    appendToLog("api",LG_INFO,"Processing now ...",$owner,$repo,$processorPath);
-    include impldePath(PROCESSORS_PATH,"main.php");
+    appendToLog("api",LG_INFO,"Processing now ...",$owner,$repo,implodePath(PROCESSORS_PATH,"main.php"));
+    include implodePath(PROCESSORS_PATH,"main.php");
 });
 
 /////////////////////////////////////////////////////////////////
