@@ -89,6 +89,12 @@ API
 	- `POST /repos/:owner/:repo/hook/:token`
 	- Called by github on tag create
 
+Tests
+-----
+- API tests : `http://public.url.to.the.api.folder.com/tests/api-tests.php`
+- Processors tests : `php tests/processors-test.php`
+- In production mode, use a htaccess or remove this folder
+
 Notes
 -----
 - Not yet compatible with Github entreprise
@@ -108,6 +114,7 @@ Install
 - edit the `api/config.php` file :
 	- change `API_PRIVATE_KEY` to a random string
 	- `API_URL` is where your api is publicly http available
+- Test : `http://public.url.to.the.api.folder.com`
 
 TODO
 ----
