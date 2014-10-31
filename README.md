@@ -98,6 +98,8 @@ Install requirements
 --------------------
 - `curl -sS https://getcomposer.org/installer | php`
 - `mv composer.phar /usr/local/bin/composer`
+- Apache, mod_rewrite
+- PHP 5.3
 
 Install
 -------
