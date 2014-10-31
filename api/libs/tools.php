@@ -128,7 +128,7 @@ function run($command) {
 ////////////////////////////////////////////////////////////////
 function notify($to, $subject, $message) {
 	if(is_array($to)) $to = implode(", ", $to);
-	mail($to, "[".SYSTEM_NAME."] - ".$subject, $message);
+	return mail($to, "[".SYSTEM_NAME."] - ".$subject, $message);
 }
 
 ////////////////////////////////////////////////////////////////
