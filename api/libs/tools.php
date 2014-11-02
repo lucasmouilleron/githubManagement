@@ -95,6 +95,17 @@ function getNeedDBFromTagName($tagName) {
 }
 
 ////////////////////////////////////////////////////////////////
+function setErrorHandler() {
+	function managerError($errno, $errstr, $errfile, $errline) {
+		if(!($errno & error_reporting())) return true;
+		global $logger, $notifyDests;
+		fatalAndNotify($notifyDests,$logger,"A script error append",$errno,$errstr,$errfile,$errline);
+		die();
+	}
+	set_error_handler("managerError", E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
+}
+
+////////////////////////////////////////////////////////////////
 function lock($owner,$repo) {
 	@mkdir(implodePath(LOCKS_PATH,$owner));
 	file_put_contents(implodePath(LOCKS_PATH,$owner,$repo), "locked");
@@ -123,6 +134,7 @@ function run($command) {
 	$code = -1;
 	$args = func_get_args();
 	if(count($args)>1) $command = implode(" ",$args);
+	$command.=" 2>&1";
 	ob_start();
 	$moreOutput = exec($command,$output,$code);
 	$moremoreoutput = ob_get_clean();

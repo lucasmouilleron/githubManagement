@@ -68,7 +68,8 @@ Tests
 - API tests : `http://public.url.to.the.api.folder.com/tests/api-tests.php`
 - Processors tests : `php tests/processors-test.php`
 - In production mode, use a htaccess or remove this folder
-- Debug tip : `tail -f processing-owner-repo.log` and `tail -f api.log`
+- Debug tip : `tail -f processing-owner-repo.log` and `tail -f api.log` 
+- Debut tip 2 : some `exec` error will go in the apache log : `tail -f /var/log/apache2/error_log`
 
 Notes
 -----

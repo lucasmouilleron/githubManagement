@@ -35,11 +35,13 @@ require_once __DIR__."/../api/libs/tools.php";
 @mkdir(REPOS_CLONES_PATH);
 putenv("HOME=".APACHE_HOME);
 putenv("PATH=".ENV_PATH);
-global $PROCESSOR_AVAILABLE_ENVS;
+global $PROCESSOR_AVAILABLE_ENVS, $logger, $notifyDests;
 $logger = implodeBits("-","processing",$owner,$repo);
 $fullRepo = implodePath($owner,$repo);
 $notifyDests = MAIN_EMAIL;
 $notifyMessages = array();
+
+setErrorHandler();
 
 $env = getEnvFromTagName($PROCESSOR_AVAILABLE_ENVS,$tagName);
 if($env == false) {appendToLog($logger,LG_INFO,"Destination env is not defined, not a processor tag",$tagName);fatal();}
