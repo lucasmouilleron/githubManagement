@@ -82,6 +82,7 @@ Install requirements
 - `mv composer.phar /usr/local/bin/composer`
 - Apache, mod_rewrite
 - PHP 5.3
+- Unix system (some processors use `cp`, `rsync`, `ssh`, etc.)
 
 Install
 -------
