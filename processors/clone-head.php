@@ -14,8 +14,8 @@ if(!file_exists($repoClonePath)) {
 	appendToLog($logger,LG_INFO,"Repo cloned");
 }
 else {
+    $result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"reset","--hard","HEAD"));
     $result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"clean","-f","-d"));
-    $result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"checkout","."));
 	$result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"pull"));
 	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't pull repo",$result["output"]);
 	if(DEBUG) appendToLog($logger,LG_INFO,"Repo pulled");
