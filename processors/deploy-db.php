@@ -28,12 +28,15 @@ $unsetItems = getUnsetItems($envSSHURI,$envDBUser,$envDBPassword,$envDBName,$env
 if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"Config properties are not all set :",$unsetItems);
 
 $tmpDBPath = implodePath($envBasePath,"--tmp-db.sql");
+
 $result = run("scp",implodePath($repoClonePath,$DBPath),$envSSHURI.":".$tmpDBPath);
 if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't send db file",$result["output"]);
 if(DEBUG) appendToLog($logger,LG_INFO,"DB sent",$result["output"]);
+
 $result = run("ssh",$envSSHURI,"\"",$envDBBinary,"--user=".$envDBUser,"--password=".$envDBPassword,$envDBName,"<",$tmpDBPath,"\"");
 if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't run db file",$result["output"]);
 if(DEBUG) appendToLog($logger,LG_INFO,"DB ran",$result["output"]);
+
 $result = run("ssh",$envSSHURI,"\"","rm",$tmpDBPath,"\"");
 if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't delete db file",$result["output"]);
 if(DEBUG) appendToLog($logger,LG_INFO,"DB deleted",$result["output"]);

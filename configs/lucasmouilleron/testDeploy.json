@@ -1,7 +1,8 @@
 {
    "processors":{
       "default":["lock","specific/test","clone","envs-assets","build","deploy-files","notify"],
-      "db":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"]
+      "db":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"],
+      "fetch":["lock","clone-head","fetch-files","fetch-db","push","notify"]
    },
    "processorsConfigs":{
       "notifyRecipients":[
@@ -19,7 +20,8 @@
             "DBUser":"root",
             "DBPassword":"root",
             "DBName":"testDeploy",
-            "DBBinary":"/usr/local/mysql/bin/mysql"
+            "DBBinary":"/usr/local/mysql/bin/mysql",
+            "DBDumpBinary":"/usr/local/mysql/bin/mysqldump"
          },
          "prod":{
             "process":false,
@@ -28,7 +30,8 @@
             "DBUser":"root",
             "DBPassword":"root",
             "DBName":"testDeploy",
-            "DBBinary":"/usr/bin/mysql"
+            "DBBinary":"/usr/bin/mysql",
+            "DBDumpBinary":"/usr/bin/mysqldump"
          }
       }
    }

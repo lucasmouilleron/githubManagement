@@ -15,15 +15,20 @@
 $envSSHURI = @$projectCfg->processorsConfigs->envConfigs->{$env}->SSHURI;
 $deployFolder = @$projectCfg->processorsConfigs->deployFolder;
 $envBasePath = @$projectCfg->processorsConfigs->envConfigs->{$env}->basePath;
-$includeFiles = @$projectCfg->processorsConfigs->fetchIncludeFiles;
-$unsetItems = getUnsetItems($envSSHURI,$deployFolder,$envBasePath,$includeFiles);
+$fetchIncludeFiles = @$projectCfg->processorsConfigs->fetchIncludeFiles;
+$unsetItems = getUnsetItems($envSSHURI,$deployFolder,$envBasePath);
 if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"Config properties are not all set :",$unsetItems);
 
 $options = "-rz";
 if(DEBUG) $options.="v";
-foreach ($includeFiles as $includeFile) {
-    $result = run("rsync",$options,implodePath($envSSHURI.":".$envBasePath,$includeFile),implodePath($repoClonePath,$deployFolder."/"));
-    if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't get files",$result["output"]);
+if(isset($fetchIncludeFiles)) {
+    foreach ($fetchIncludeFiles as $includeFile) {
+        $result = run("rsync",$options,implodePath($envSSHURI.":".$envBasePath,$includeFile),implodePath($repoClonePath,$deployFolder."/"));
+        if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't get files",$result["output"]);
+    }
+}
+else {
+    appendToLog($logger,LG_INFO,"No files to include");
 }
 
 ?>
