@@ -25,7 +25,7 @@ $envDBBinary = @$projectCfg->processorsConfigs->envConfigs->{$env}->DBBinary;
 $envBasePath = @$projectCfg->processorsConfigs->envConfigs->{$env}->basePath;
 $DBPath = @$projectCfg->processorsConfigs->DBPath;
 $unsetItems = getUnsetItems($envSSHURI,$envDBUser,$envDBPassword,$envDBName,$envDBBinary,$envBasePath,$DBPath);
-if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"DB config properties are not all set :",$unsetItems);
+if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"Config properties are not all set :",$unsetItems);
 
 $tmpDBPath = implodePath($envBasePath,"--tmp-db.sql");
 $result = run("scp",implodePath($repoClonePath,$DBPath),$envSSHURI.":".$tmpDBPath);

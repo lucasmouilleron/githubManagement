@@ -1,33 +1,29 @@
 <?php
 
 ////////////////////////////////////////////////////////////////
-// DEPLOY FILES
+// FETCH FILES
 ////////////////////////////////////////////////////////////////
-// Deploy files to the dest ENV.
+// Fetches files from the dest ENV.
 // Make sure you sent your public key to the remove ENV (for rsync to run not interactively)
 ////////////////////////////////////////////////////////////////
 // processorsConfigs->envConfigs->{$env}->SSHURI(*) : the remote ssh uri
 // processorsConfigs->envConfigs->{$env}->basePath(*) : the remote root folder
 // processorsConfigs->deployFolder(*) : the local repo deploy root folder
-// processorsConfigs->deployExcludeFiles : list of excluded files or folders
+// processorsConfigs->fetchIncludeFiles : list of included files or folders
 ////////////////////////////////////////////////////////////////
 
 $envSSHURI = @$projectCfg->processorsConfigs->envConfigs->{$env}->SSHURI;
 $deployFolder = @$projectCfg->processorsConfigs->deployFolder;
 $envBasePath = @$projectCfg->processorsConfigs->envConfigs->{$env}->basePath;
-$excludeFiles = @$projectCfg->processorsConfigs->deployExcludeFiles;
-$unsetItems = getUnsetItems($envSSHURI,$deployFolder,$envBasePath);
+$includeFiles = @$projectCfg->processorsConfigs->fetchIncludeFiles;
+$unsetItems = getUnsetItems($envSSHURI,$deployFolder,$envBasePath,$includeFiles);
 if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"Config properties are not all set :",$unsetItems);
 
 $options = "-rz";
 if(DEBUG) $options.="v";
-$exclusions = "";
-if(isset($excludeFiles)) {
-    foreach ($excludeFiles as $excludeFile) {
-       $exclusions.=" --exclude '".$excludeFile."'";
-   }
+foreach ($includeFiles as $includeFile) {
+    $result = run("rsync",$options,implodePath($envSSHURI.":".$envBasePath,$includeFile),implodePath($repoClonePath,$deployFolder."/"));
+    if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't get files",$result["output"]);
 }
-$result = run("rsync",$options,$exclusions,implodePath($repoClonePath,$deployFolder."/"),$envSSHURI.":".$envBasePath);
-if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't send files",$result["output"]);
 
 ?>

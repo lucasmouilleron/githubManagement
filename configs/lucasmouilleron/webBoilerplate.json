@@ -1,16 +1,18 @@
 {
    "processors":{
       "default":["lock","specific/test","clone","envs-assets","build","deploy-files","notify"],
-      "db":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"]
+      "db":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"],
+      "fetch":["lock","clone-head","fetch-files","push","notify"]
    },
    "processorsConfigs":{
       "notifyRecipients":[
          "lucas.mouilleron@me.com"
       ],
       "deployFolder":".",
+      "deployExcludeFiles":[".git*","_dev","_build"],
+      "fetchIncludeFiles":["medias"],
       "buildCommand":"cd _build && npm install && grunt build",
       "envAssetsPath":"local",
-      "excludeFiles":[".git*","_dev/*","_build/*"],
       "envConfigs":{
          "test":{
             "process":true,
