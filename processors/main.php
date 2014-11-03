@@ -17,6 +17,7 @@ require_once __DIR__."/../api/libs/tools.php";
 // $notifyDests : the notify recievers
 // $notifyMessages : array of messages to be sent by the notify processor
 // $env : the destination env
+// $target : the target
 // $projectCfg : the project config (json -> object)
 // $fullRepo : the full repo name (owner/repo)
 // $repoClonePath : the cloned repo path
@@ -45,6 +46,9 @@ setErrorHandler();
 
 $env = getEnvFromTagName($PROCESSOR_AVAILABLE_ENVS,$tagName);
 if($env == false) {appendToLog($logger,LG_INFO,"Destination env is not defined, not a processor tag",$tagName);fatal();}
+
+$target = getTargetFromTagName($tagName);
+
 $projectCfg = readJSONFile(implodePath(CONFIGS_PATH,$owner,$repo.".json"));
 if($projectCfg == false) fatalAndNotify($notifyDests,$logger,"Config file not found");
 
@@ -58,10 +62,10 @@ if(isset($projectCfg->processorsConfigs->notifyRecipients)) $notifyDests = $proj
 ////////////////////////////////////////////////////////////////
 // RUN PROCESSORS
 ////////////////////////////////////////////////////////////////
-appendToLog($logger,LG_INFO,"Begining processing","owner",$owner,"repo",$repo,"tagName",$tagName,"tagSHA",$tagSHA,"commitSHA",$commitSHA,"env",$env);
-$notifyMessages[]=implodeBits(" / ","Processed : ","owner",$owner,"repo",$repo,"tagName",$tagName,"tagSHA",$tagSHA,"commitSHA",$commitSHA,"env",$env);
+appendToLog($logger,LG_INFO,"Begining processing","owner",$owner,"repo",$repo,"tagName",$tagName,"tagSHA",$tagSHA,"commitSHA",$commitSHA,"env",$env,"target",$target);
+$notifyMessages[]=implodeBits(" / ","Processed : ","owner",$owner,"repo",$repo,"tagName",$tagName,"tagSHA",$tagSHA,"commitSHA",$commitSHA,"env",$env,"target",$target);
 
-$processors = $projectCfg->processors;
+$processors = $projectCfg->processors->{$target};
 if(!isset($processors)) $processors = array();
 foreach ($processors as $processor) {
     $processorPath = implodePath(PROCESSORS_PATH,$processor.".php");

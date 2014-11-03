@@ -1,5 +1,8 @@
 {
-   "processors":["lock","clone","envs-assets","build","deploy-files","notify"],
+   "processors":{
+      "default":["lock","specific/test","clone","envs-assets","build","deploy-files","notify"],
+      "db":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"]
+   },
    "processorsConfigs":{
       "notifyRecipients":[
          "lucas.mouilleron@me.com"

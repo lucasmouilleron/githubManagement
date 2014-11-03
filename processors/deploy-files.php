@@ -22,8 +22,10 @@ if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"Deploy-files config
 $options = "-rz";
 if(DEBUG) $options.="v";
 $exclusions = "";
-foreach ($excludeFiles as $excludeFile) {
-	$exclusions.=" --exclude '".$excludeFile."'";
+if(isset($excludeFiles)) {
+    foreach ($excludeFiles as $excludeFile) {
+       $exclusions.=" --exclude '".$excludeFile."'";
+   }
 }
 $result = run("rsync",$options,$exclusions,implodePath($repoClonePath,$deployFolder."/"),$envSSHURI.":".$envBasePath);
 if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't send files",$result["output"]);

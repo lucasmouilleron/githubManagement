@@ -83,15 +83,33 @@ function getProcessorName($file) {
 
 ////////////////////////////////////////////////////////////////
 function getEnvFromTagName($possibleEnvs, $tagName) {
-	foreach ($possibleEnvs as $possibleEnv) {
-		if(contains($tagName,PROCESSOR_DEPLOY_PREFIX.$possibleEnv)) return $possibleEnv;
+	if(!contains($tagName,PROCESSOR_DEPLOY_PREFIX)) {
+		return false;
 	}
-	return false;
+	$params = substr($tagName, strpos($tagName, PROCESSOR_DEPLOY_PREFIX) + strlen(PROCESSOR_DEPLOY_PREFIX.PROCESSOR_DEPLOY_SEPARATOR));
+	$params = explode(PROCESSOR_DEPLOY_SEPARATOR,$params);
+	$env = $params[0];
+	if(in_array($env, $possibleEnvs)) {
+		return $env;
+	}
+	else {
+		return false;
+	}
 }
 
 ////////////////////////////////////////////////////////////////
-function getNeedDBFromTagName($tagName) {
-	return contains($tagName,PROCESSOR_DEPLOY_DB);
+function getTargetFromTagName($tagName) {
+	if(!contains($tagName,PROCESSOR_DEPLOY_PREFIX)) {
+		return false;
+	}
+	$params = substr($tagName, strpos($tagName, PROCESSOR_DEPLOY_PREFIX) + strlen(PROCESSOR_DEPLOY_PREFIX.PROCESSOR_DEPLOY_SEPARATOR));
+	$params = explode(PROCESSOR_DEPLOY_SEPARATOR,$params);
+	if(count($params) < 2) {
+		return "default";
+	}
+	else {
+		return $params[1];
+	}
 }
 
 ////////////////////////////////////////////////////////////////
