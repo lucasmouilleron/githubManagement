@@ -17,7 +17,7 @@ require_once __DIR__."/../api/libs/tools.php";
 // $notifyDests : the notify recievers
 // $notifyMessages : array of messages to be sent by the notify processor
 // $env : the destination env
-// $target : the target
+// $target : the processors set
 // $projectCfg : the project config (json -> object)
 // $fullRepo : the full repo name (owner/repo)
 // $repoClonePath : the cloned repo path

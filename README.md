@@ -26,8 +26,9 @@ Users management
 
 Triggering
 ----------
-- Tag name syntax : `.*--deploy-ENV.*`
-- ENVS are defined in `$PROCESSOR_AVAILABLE_ENVS` in `api/config.php`
+- Tag name syntax : `.*--deploy==ENV==TARGET`
+- ENVs are defined in `$PROCESSOR_AVAILABLE_ENVS` in `api/config.php`
+- If target is ommited, target = "default"
 - Wheter the tag is created from the API or from a local repo (and then pushed), the processing will be triggered
 - For the tag to trigger processor, a webhook must be set on the repo. Our small API can take care of it. cf [Route 'Init processing'](#routes)
 
