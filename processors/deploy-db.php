@@ -4,7 +4,6 @@
 // DEPLOY DB
 ////////////////////////////////////////////////////////////////
 // Sends the DB to the env remote. Runs it. Delete it.
-// For flexibility reason, the string `--db` must be included in the tag name for the processor to run.
 // Make sure you sent your public key to the remove ENV (for scp to run not interactively).
 // mySQL support only.
 ////////////////////////////////////////////////////////////////
@@ -26,23 +25,18 @@ $envDBBinary = @$projectCfg->processorsConfigs->envConfigs->{$env}->DBBinary;
 $envBasePath = @$projectCfg->processorsConfigs->envConfigs->{$env}->basePath;
 $DBPath = @$projectCfg->processorsConfigs->DBPath;
 $unsetItems = getUnsetItems($envSSHURI,$envDBUser,$envDBPassword,$envDBName,$envDBBinary,$envBasePath,$DBPath);
-if(!empty($unsetItems)) fatalAndNotify($notifyDests,$loggerfatalAndNotify,"Deploy-DB config properties are not all set :",$unsetItems);
+if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"DB config properties are not all set :",$unsetItems);
 
-if(getNeedDBFromTagName($tagName)) {
-	if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"DB config properties are not all set :",$unsetItems);
-	$tmpDBPath = implodePath($envBasePath,"--tmp-db.sql");
-	$result = run("scp",implodePath($repoClonePath,$DBPath),$envSSHURI.":".$tmpDBPath);
-	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't send db file",$result["output"]);
-	if(DEBUG) appendToLog($logger,LG_INFO,"DB sent",$result["output"]);
-	$result = run("ssh",$envSSHURI,"\"",$envDBBinary,"--user=".$envDBUser,"--password=".$envDBPassword,$envDBName,"<",$tmpDBPath,"\"");
-	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't run db file",$result["output"]);
-	if(DEBUG) appendToLog($logger,LG_INFO,"DB ran",$result["output"]);
-	$result = run("ssh",$envSSHURI,"\"","rm",$tmpDBPath,"\"");
-	if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't delete db file",$result["output"]);
-	if(DEBUG) appendToLog($logger,LG_INFO,"DB deleted",$result["output"]);
-}
-else {
-	appendToLog($logger,LG_INFO,"DB deploy was not asked.","You need to explicitely add the DB deploy key in the tag message",PROCESSOR_DEPLOY_DB);
-}
+$tmpDBPath = implodePath($envBasePath,"--tmp-db.sql");
+$result = run("scp",implodePath($repoClonePath,$DBPath),$envSSHURI.":".$tmpDBPath);
+if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't send db file",$result["output"]);
+if(DEBUG) appendToLog($logger,LG_INFO,"DB sent",$result["output"]);
+$result = run("ssh",$envSSHURI,"\"",$envDBBinary,"--user=".$envDBUser,"--password=".$envDBPassword,$envDBName,"<",$tmpDBPath,"\"");
+if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't run db file",$result["output"]);
+if(DEBUG) appendToLog($logger,LG_INFO,"DB ran",$result["output"]);
+$result = run("ssh",$envSSHURI,"\"","rm",$tmpDBPath,"\"");
+if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't delete db file",$result["output"]);
+if(DEBUG) appendToLog($logger,LG_INFO,"DB deleted",$result["output"]);
+
 
 ?>

@@ -85,7 +85,7 @@ Install
 - `mv api/config.php.sample api/config.php`
 - edit the `api/config.php` file :
 	- change `API_PRIVATE_KEY` to a random string
-	- set `APACHE_HOME` to an existing folder and make sure Apache can write in it
+	- set `APACHE_HOME` to an existing folder and make sure Apache can write in it (or `sudo mkdir /ghm-tmp && sudo chmod -R 777 /ghm-tmp` (the `APACHE_HOME` folder, defined in `api/config.php`)
 	- set `ENV_PATH` so it contains all binaries that might be called from processors (rsync, scp, git), or build files (npm, grunt, etc.)
 	- `API_URL` is where your api is publicly http available
 	- set `DEBUG` to `false` in production mode
