@@ -9,11 +9,6 @@ Features
 - Processors : per project configuration of standard (clone, build, send, etc.) and custom processors to run against a tag hook
 - Miscs : loging
 
-Notes
------
-- Not yet compatible with Github Entreprise
-- This management method is agnostic of pull requests and branches. It helps deploying the master branch when you want (see [Triggering](#triggering)
-
 Architecture
 ------------
 - `api` : the public API
@@ -95,6 +90,29 @@ Install
 	- `API_URL` is where your api is publicly http available
 	- set `DEBUG` to `false` in production mode
 - Test : `http://public.url.to.the.api.folder.com`
+
+Notes
+-----
+- Not yet compatible with Github Entreprise (maybe some API differences)
+- This management method is agnostic of pull requests and branches. It helps deploying the master branch when you want (see [Triggering](#triggering)
+- For the record, example of pull requests process : 
+	- From contributor / employee / contractor :
+		- Create a branch for a feature : `git branch -b the-feature`
+		- Commit and push branch to remote : `git add . && git commit -m "message" && git push`
+		- Create pull request : `git pull-request`
+		- Wait for feedback
+	- From maintainer : 
+		- Merge the branch : `git fetch && git checkout master && git merge the-feature`
+		- Push it back  : `git branch -d the-feature && git push`
+	- Contributor and maintainer can be the same person. No need for pull-requests in this case
+	- On Github Entreprise, it is possible to give some users pull only access. They contribute to the repo with pull-requests only
+
+Docs
+----
+- [Using branches](https://www.atlassian.com/git/tutorials/using-branches/git-branch)
+- [Pull requests goog practices](http://codeinthehole.com/writing/pull-requests-and-other-good-practices-for-teams-using-github/)
+- [Github Flow](https://guides.github.com/introduction/flow/index.html)
+- [Hib tool](https://hub.github.com) (generate pull requests links)
 
 TODO
 ----
