@@ -3,7 +3,7 @@ githubManagement
 
 Features
 --------
-- Github projects management and processing
+- Github projects management and processing for entreprisess
 - Relies on Github user roles and access system
 - Small API to create tags on master, respond to Githib web hooks, etc.
 - Processors : per project configuration of standard (clone, build, send, etc.) and custom processors to run against a tag hook
@@ -91,31 +91,70 @@ Install
 	- set `DEBUG` to `false` in production mode
 - Test : `http://public.url.to.the.api.folder.com`
 
-Notes
------
-- Not yet compatible with Github Entreprise (maybe some API differences)
-- This management method is agnostic of pull requests and branches. It helps deploying the master branch when you want (see [Triggering](#triggering)
-- For the record, example of pull requests process : 
+Git workflow
+------------
+- This management method is agnostic of pull requests and branches
+- It just helps deploying the master branch when you want (see [Triggering](#triggering)
+
+### Centralized flow
+- Flow : 
+	- Like SVN
+	- Everyone commits to the master branch
+	- Contributor :
+		- Pull from remote repo : `git pull`
+		- Work localy : `git add . && git commit -m "message"`
+		- Push to the remote repo : `git push`
+		- If some conflicts occur :
+			- The push will fail
+			- The contributor solves conflicts localy
+			- And then pushes again
+- Pros : Simple
+- Cons : Does not induce code verificaiton on pushes
+
+### Feature branch flow
+- Flow : 
+	- Every feature is developped in a dedicated branch
+	- The branch is then merged to the master
+	- Pull-requests can be issued before merging, so the repo maintainers and developpers can review the branch before merging it
 	- From contributor / employee / contractor :
-		- Fork the repo (if pull only acess, otherwise, clone)
+		- On Github Entreprise, it is possible to give some users pull only access
+		- Pull from remote repo (if pull only acess fork, otherwise `git pull`)
 		- Create a branch for a feature : `git branch -b the-feature`
-		- Commit and push branch to remote : `git add . && git commit -m "message" && git push`
+		- Work localy : `git add . && git commit -m "message"`
+		- Push branch to remote repo : `git push`
 		- Create pull request : `git pull-request`
 		- Wait for feedback
 	- From maintainer : 
-		- Merge the branch : `git fetch && git checkout master && git merge the-feature`
+		- Merge the branch : `git fetch && git checkout master && git pull && git merge the-feature`
 		- Push it back  : `git branch -d the-feature && git push`
-	- Contributor and maintainer can be the same person. No need for pull-requests in this case
-	- On Github Entreprise, it is possible to give some users pull only access. They contribute to the repo with pull-requests only
+		- If some conflicts occur : 
+			- The maintainer solves conflicts localy and then commits the modifications
+			- Or reject the pull request and ask the contributor to merge the `master` in `the-feature`, resolve conflicts and re issue its pull-request
+	- Contributor and maintainer can be the same person. No need for pull-requests in this case.
+- Pros : Pull-requests induce code verification
+- Cons : A bit more heavy, but compatible with the centralized flow
+
+### GitFlow
+- Flow :
+	- Built on top of the feature branch flow
+	- Adds the centralized branch `developp`, `hotfix` and `release-*`
+	- The main feature is the `master` branch is always deployable, ie it is the truth of the projects
+	- Contributors developp features in features branches and pull-request on `developp`
+	- At some point, the developp branch is merged into the master one (via a `release-*` branch)
+- Pros : good for CI systems, very flexible
+- Cons : quite heavy, needs git maturity
 
 Docs
 ----
 - [Using branches](https://www.atlassian.com/git/tutorials/using-branches/git-branch)
-- [Pull requests goog practices](http://codeinthehole.com/writing/pull-requests-and-other-good-practices-for-teams-using-github/)
+- [Git flows](https://www.atlassian.com/git/tutorials/comparing-workflows)
+- [GitFlow doc](http://nvie.com/posts/a-successful-git-branching-model/)
+- [Pull requests good practices](http://codeinthehole.com/writing/pull-requests-and-other-good-practices-for-teams-using-github/)
 - [Github Flow](https://guides.github.com/introduction/flow/index.html)
-- [Hib tool](https://hub.github.com) (generate pull requests links)
+- [Hub tool](https://hub.github.com) (generate pull requests links)
 
 TODO
 ----
+- Not yet compatible with Github Entreprise (maybe some API differences)
 - better capture exec ouput un tools->run()
 - log cleanup
