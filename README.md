@@ -97,6 +97,7 @@ Notes
 - This management method is agnostic of pull requests and branches. It helps deploying the master branch when you want (see [Triggering](#triggering)
 - For the record, example of pull requests process : 
 	- From contributor / employee / contractor :
+		- Fork the repo (if pull only acess, otherwise, clone)
 		- Create a branch for a feature : `git branch -b the-feature`
 		- Commit and push branch to remote : `git add . && git commit -m "message" && git push`
 		- Create pull request : `git pull-request`
