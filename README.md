@@ -9,6 +9,11 @@ Features
 - Processors : per project configuration of standard (clone, build, send, etc.) and custom processors to run against a tag hook
 - Miscs : loging
 
+Notes
+-----
+- Not yet compatible with Github Entreprise
+- This management method is agnostic of pull requests and branches. It helps deploying the master branch when you want (see [Triggering](#triggering)
+
 Architecture
 ------------
 - `api` : the public API
@@ -70,11 +75,6 @@ Tests
 - In production mode, use a htaccess or remove this folder
 - Debug tip : `tail -f processing-owner-repo.log` and `tail -f api.log` 
 - Debut tip 2 : some `exec` error will go in the apache log : `tail -f /var/log/apache2/error_log`
-
-Notes
------
-- Not yet compatible with Github entreprise
-- Deployment is purposly simple. Other methods could involve branching and pushing tags to specific branches.
 
 Install requirements
 --------------------
