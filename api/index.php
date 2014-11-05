@@ -38,12 +38,12 @@ $app->post("/repos/:owner/:repo/tag", function($owner, $repo) use ($app) {
     $tagMessage = $app->request->post("tag-message");
     $data = '{"tag": "'.$tagName.'","message": "'.$tagMessage.'","object": "'.$tagRevision.'","type": "commit"}';
     $result = postGithub($githubToken,"repos",$owner,$repo,"git","tags",$data);
-    if(!$result["status"]) {echo json_encode(array("status"=>$result["status"],"hint"=>$result["content"]));die();};
+    if(!$result["status"]) {echo json_encode(array("status"=>$result["status"],"content"=>$result["content"]));die();};
 
     $tagSHA = $result["content"]->sha;
     $data = '{"ref": "refs/tags/'.$tagName.'","sha": "'.$tagSHA.'"}';
     $result = postGithub($githubToken,"repos",$owner,$repo,"git","refs",$data);
-    echo json_encode(array("status"=>$result["status"],"hint"=>$result["content"]));
+    echo json_encode(array("status"=>$result["status"],"content"=>$result["content"]));
 });
 
 /////////////////////////////////////////////////////////////////
@@ -53,12 +53,48 @@ $app->get("/repos", function() use ($app) {
 
 /////////////////////////////////////////////////////////////////
 // needs a valid Github token as extra get parameter
+// the user for the token must be part of the master users
+$app->post("/repos/:repo/init", function($repo) use ($app) {
+    $githubToken = @getGithubToken($app);
+    
+    global $MASTER_USERS;
+    $result = getGithub($githubToken,"user");
+    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api","Can't get user infos",$result["content"]);
+    $username = $result["content"]->login;
+    if(!in_array($username, $MASTER_USERS)) {
+        echo json_encode(array("status"=>false,"content"=>message($username,"is not a master user")));
+        return;
+    }
+
+    $data = '{"name":"'.$repo.'"}';
+    $result = postGithub($githubToken,"user","repos",$data);
+    if(!$result["status"]) {
+        echo json_encode(array("status"=>false,"content"=>message("Can't create repo",$result["content"])));
+        return;
+    }
+    
+    postAPI("repos",$username,$repo,"hook","init?".API_GITHUB_TOKEN_NAME."=".$githubToken);    
+});
+
+/////////////////////////////////////////////////////////////////
+// needs a valid Github token as extra get parameter
+// the user for the token must be part of the master users
 $app->post("/repos/:owner/:repo/hook/init", function($owner, $repo) use ($app) {
     $githubToken = @getGithubToken($app);
+    
+    global $MASTER_USERS;
+    $result = getGithub($githubToken,"user");
+    if(!$result["status"]) fatalAndNotify(MAIN_EMAIL,"api","Can't get user infos",$result["content"]);
+    $username = $result["content"]->login;
+    if(!in_array($username, $MASTER_USERS)) {
+        echo json_encode(array("status"=>false,"content"=>message($username,"is not a master user")));
+        return;
+    }
+    
     $url = implodePath(API_URL,"repos",$owner,$repo,"hook");
     $data = '{"name": "web", "active": true, "events": ["create"], "config": {"url": "'.$url.'", "content_type": "json", "secret":"'.API_PRIVATE_KEY.'"}}';
     $result = postGithub($githubToken,"repos",$owner,$repo,"hooks",$data);
-    echo json_encode(array("status"=>$result["status"],"hint"=>$result["content"]));
+    echo json_encode(array("status"=>$result["status"],"content"=>$result["content"]));
 });
 
 /////////////////////////////////////////////////////////////////

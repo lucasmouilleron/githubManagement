@@ -23,6 +23,7 @@ define("GIT_PATH","git");
 define("API_PRIVATE_KEY","i love kate yes");
 define("API_URL", "http://public.url.to.the.api.folder.com/");
 define("API_GITHUB_TOKEN_NAME","github-token");
+$MASTER_USERS = array("github-username-1","github-username-2");
 
 ///////////////////////////////////////////////////////////////////
 $PROCESSOR_AVAILABLE_ENVS = array("test","prod");

@@ -15,7 +15,6 @@ function getGithub() {
 		else break;
 	}
 	$path = implode("/", $routePatams);
-	if(DEBUG) printLine("HTTP getting URL : ".GITHUB_API_URL.$path);
 	$request = Requests::get(GITHUB_API_URL.$path, array("Accept"=>GITHUB_API_VERSION_HEADER,"Authorization"=>"token ".$token), array("verify"=>false));
 	$status = true;
 	if($request->status_code != 200) $status = false;
@@ -39,6 +38,28 @@ function postGithub() {
 	$status = true;
 	if($request->status_code != 200 && $request->status_code != 201) $status = false;
 	return array("status"=>$status,"content"=>json_decode($request->body));
+}
+
+////////////////////////////////////////////////////////////////
+function postAPI() {
+	$params = func_get_args();
+	$data = array();
+	$routePatams = array();
+	foreach ($params as $param) {
+		if(!is_array($param) && !startsWith($param, "{")) $routePatams[]=$param;
+		else {
+			$data = $param; break;
+		}
+	}
+	$path = implode("/", $routePatams);
+	$request = Requests::post(API_URL.$path, array(), $data, array("verify"=>false));
+	$status = true;
+	if($request->status_code != 200 && $request->status_code != 201) $status = false;
+	$body = json_decode($request->body);
+	var_dump($body);
+	$status = $body->status;
+	$content = $body->content;
+	return array("status"=>$status,"content"=>$content);
 }
 
 /////////////////////////////////////////////////////////////
@@ -172,7 +193,7 @@ function appendToLog($logger,$level,$message) {
 	$args = func_get_args();
 	$logger = array_shift($args);
 	$level = array_shift($args);
-	$message = messageForLogFromArgs($args);
+	$message = messageFromArgs($args);
 	$message = date("Y/m/d H:i:s")." - [".$level."] - ".$message."\r\n";
 	file_put_contents(LOG_PATH."/".$logger.".log", $message, FILE_APPEND);
 }
@@ -183,7 +204,7 @@ function appendToLogAndNotify($to,$logger,$level,$message) {
 	$to = array_shift($args);
 	$logger = array_shift($args);
 	$level = array_shift($args);
-	$message = messageForLogFromArgs($args);
+	$message = messageFromArgs($args);
 	appendToLog($logger,$level,$message);
 	notify($to,$logger."/".$level,$message);
 }
@@ -193,16 +214,22 @@ function fatalAndNotify($to,$logger,$message) {
 	$args = func_get_args();
 	$to = array_shift($args);
 	$logger = array_shift($args);
-	$message = messageForLogFromArgs($args);
+	$message = messageFromArgs($args);
 	appendToLogAndNotify($to,$logger,LG_FATAL,$message);
 	fatal();
 }
 
 ////////////////////////////////////////////////////////////////
-function messageForLogFromArgs($args) {
+function messageFromArgs($args) {
 	array_walk($args, function(&$val){if(is_object($val) || is_array($val)) {$val = json_encode($val);}});
 	$message = implode(" / ", $args);
 	return str_replace("\n"," ",$message);
+}
+
+////////////////////////////////////////////////////////////////
+function message() {
+	$args = func_get_args();
+	return messageFromArgs($args);
 }
 
 ////////////////////////////////////////////////////////////////
