@@ -5,8 +5,15 @@
 ////////////////////////////////////////////////////////////////
 // Notifies the $notifyDests of $notifyMessages
 ////////////////////////////////////////////////////////////////
+Class NotifyProcessor extends Processor {
 
-$result = notify($notifyDests,implodeBits(" - ",$fullRepo,"Processing finished"),implode("\n\r\n\r",$notifyMessages));
-if(DEBUG) appendToLog($logger,LG_INFO,"Notifcation sent",$notifyDests);
+    ////////////////////////////////////////////////////////////////
+    public function run() {
+
+        $result = $this->notify(implodeBits(" - ",$this->fullRepo,"Processing finished"),implode("\n\r\n\r",$this->notifyMessages));
+        if(DEBUG) $this->appendToLog(LG_INFO,"Notifcation sent",$this->notifyDests);
+
+    }
+}
 
 ?>

@@ -41,7 +41,10 @@ Processors
 ----------
 - The available processors are located in `processors`
 - Processors docs can be found in the headers of the `processors/*` files
-- The `main` processor is called first and calls the next processors configured in `configs/owner/repo.json->processors`
+- The `main` processor must be called first and calls the next processors configured in `configs/owner/repo.json->processors`
+- All processors extends `Processor` class (`libs/processor.php`)
+- All processors must implement the `run` method
+- All available properties are the public properties of the `Processor` class
 
 API
 ---

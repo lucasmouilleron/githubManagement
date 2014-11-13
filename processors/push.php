@@ -5,17 +5,25 @@
 ////////////////////////////////////////////////////////////////
 // Commits and pushes to the remote repo master.
 ////////////////////////////////////////////////////////////////
+Class PushProcessor extends Processor {
 
-$result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"add","."));
-if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't add to repo",$result["output"]);
-if(DEBUG) appendToLog($logger,LG_INFO,"Added");
+    ////////////////////////////////////////////////////////////////
+    public function run() {
 
-$result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"commit","-m","\"processor commit\""));
-if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't commit to repo",$result["output"]);
-if(DEBUG) appendToLog($logger,LG_INFO,"Commited");
+        $result = run(implodeSpace("cd",$this->repoClonePath,"&&",GIT_PATH,"add","."));
+        if(!$result["success"]) $this->fatalAndNotify("Can't add to repo",$result["output"]);
+        if(DEBUG) $this->appendToLog(LG_INFO,"Added");
 
-$result = run(implodeSpace("cd",$repoClonePath,"&&",GIT_PATH,"push","origin"));
-if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't push repo",$result["output"]);
-if(DEBUG) appendToLog($logger,LG_INFO,"Repo pushed");
+        $result = run(implodeSpace("cd",$this->repoClonePath,"&&",GIT_PATH,"commit","-m","\"processor commit\""));
+        if(!$result["success"]) $this->fatalAndNotify("Can't commit to repo",$result["output"]);
+        if(DEBUG) $this->appendToLog(LG_INFO,"Commited");
+
+        $result = run(implodeSpace("cd",$this->repoClonePath,"&&",GIT_PATH,"push","origin"));
+        if(!$result["success"]) $this->fatalAndNotify("Can't push repo",$result["output"]);
+        if(DEBUG) $this->appendToLog(LG_INFO,"Repo pushed");
+
+    }
+
+}
 
 ?>

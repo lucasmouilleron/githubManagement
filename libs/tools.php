@@ -98,76 +98,6 @@ function checkHookSignature($payload, $signature) {
 }
 
 ////////////////////////////////////////////////////////////////
-function getProcessorName($file) {
-	return preg_replace('/\\.[^.\\s]{3,4}$/', '', basename($file));
-}
-
-////////////////////////////////////////////////////////////////
-function getEnvFromTagName($possibleEnvs, $tagName) {
-	if(!contains($tagName,PROCESSOR_DEPLOY_PREFIX)) {
-		return false;
-	}
-	$params = substr($tagName, strpos($tagName, PROCESSOR_DEPLOY_PREFIX) + strlen(PROCESSOR_DEPLOY_PREFIX.PROCESSOR_DEPLOY_SEPARATOR));
-	$params = explode(PROCESSOR_DEPLOY_SEPARATOR,$params);
-	$env = $params[0];
-	if(in_array($env, $possibleEnvs)) {
-		return $env;
-	}
-	else {
-		return false;
-	}
-}
-
-////////////////////////////////////////////////////////////////
-function getTargetFromTagName($tagName) {
-	if(!contains($tagName,PROCESSOR_DEPLOY_PREFIX)) {
-		return false;
-	}
-	$params = substr($tagName, strpos($tagName, PROCESSOR_DEPLOY_PREFIX) + strlen(PROCESSOR_DEPLOY_PREFIX.PROCESSOR_DEPLOY_SEPARATOR));
-	$params = explode(PROCESSOR_DEPLOY_SEPARATOR,$params);
-	if(count($params) < 2) {
-		return "default";
-	}
-	else {
-		return $params[1];
-	}
-}
-
-////////////////////////////////////////////////////////////////
-function setErrorHandler() {
-	function managerError($errno, $errstr, $errfile, $errline) {
-		if(!($errno & error_reporting())) return true;
-		global $logger, $notifyDests;
-		fatalAndNotify($notifyDests,$logger,"A script error append",$errno,$errstr,$errfile,$errline);
-		die();
-	}
-	set_error_handler("managerError", E_ALL & ~E_NOTICE & ~E_USER_NOTICE);
-}
-
-////////////////////////////////////////////////////////////////
-function lock($owner,$repo) {
-	@mkdir(implodePath(LOCKS_PATH,$owner));
-	file_put_contents(implodePath(LOCKS_PATH,$owner,$repo), "locked");
-	registerAutoUnlock($owner,$repo);
-}
-
-////////////////////////////////////////////////////////////////
-function unlock($owner,$repo) {
-	unlink(implodePath(LOCKS_PATH,$owner,$repo));
-}
-
-////////////////////////////////////////////////////////////////
-function isLocked($owner,$repo) {
-	return file_exists(implodePath(LOCKS_PATH,$owner,$repo));
-}
-
-////////////////////////////////////////////////////////////////
-function registerAutoUnlock($owner,$repo) {
-	function shutdown($owner,$repo) {unlock($owner,$repo);}
-	register_shutdown_function("shutdown",$owner,$repo);
-}
-
-////////////////////////////////////////////////////////////////
 function run($command) {
 	$output = array();
 	$code = -1;
@@ -180,6 +110,23 @@ function run($command) {
 	$ouput[]=$moreOutput;
 	$ouput[]=$moremoreoutput;
 	return array("code"=>$code,"output"=>$output,"success"=>($code==0));
+}
+
+
+////////////////////////////////////////////////////////////////	
+function camelCase($str, $exclude = array())
+{
+	$str = replaceAccents($str);
+	$str = preg_replace('/[^a-z0-9' . implode("", $exclude) . ']+/i', ' ', $str);
+	$str = ucwords(trim($str));
+	return str_replace(" ", "", $str);
+}
+
+////////////////////////////////////////////////////////////////	
+function replaceAccents($str) {
+	$search = explode(",","ç,æ,œ,á,é,í,ó,ú,à,è,ì,ò,ù,ä,ë,ï,ö,ü,ÿ,â,ê,î,ô,û,å,ø,Ø,Å,Á,À,Â,Ä,È,É,Ê,Ë,Í,Î,Ï,Ì,Ò,Ó,Ô,Ö,Ú,Ù,Û,Ü,Ÿ,Ç,Æ,Œ");
+	$replace = explode(",","c,ae,oe,a,e,i,o,u,a,e,i,o,u,a,e,i,o,u,y,a,e,i,o,u,a,o,O,A,A,A,A,A,E,E,E,E,I,I,I,I,O,O,O,O,U,U,U,U,Y,C,AE,OE");
+	return str_replace($search, $replace, $str);
 }
 
 ////////////////////////////////////////////////////////////////
@@ -238,15 +185,6 @@ function fatal() {
 }
 
 ////////////////////////////////////////////////////////////////
-function getUnsetItems($items) {
-	$unsets = array();
-	foreach (func_get_args() as $item) {
-		if(!isset($item)) $unsets[]=printVarName($item);
-	}
-	return $unsets;
-}
-
-////////////////////////////////////////////////////////////////
 function dump($var) {
 	return var_export($var,true);
 }
@@ -288,16 +226,6 @@ function startsWith($haystack, $needle)
 ////////////////////////////////////////////////////////////////
 function contains($str, $needle) {
 	return (strpos($str,$needle) !== FALSE);
-}
-
-////////////////////////////////////////////////////////////////
-function printVarName($var) {
-	foreach($GLOBALS as $var_name => $value) {
-		if ($value === $var) {
-			return $var_name;
-		}
-	}
-	return false;
 }
 
 ////////////////////////////////////////////////////////////////

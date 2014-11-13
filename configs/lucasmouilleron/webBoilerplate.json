@@ -2,7 +2,7 @@
    "processors":{
       "default":["lock","specific/test","clone","envs-assets","build","deploy-files","notify"],
       "db":["lock","specific/test","clone","envs-assets","build","deploy-files","deploy-db","notify"],
-      "fetch":["lock","clone-head","fetch-files","fetch-db","push","notify"]
+      "fetch":["lock","clone-head","fetch-files","push","notify"]
    },
    "processorsConfigs":{
       "notifyRecipients":[

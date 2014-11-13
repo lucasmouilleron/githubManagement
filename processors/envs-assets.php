@@ -9,18 +9,25 @@
 ////////////////////////////////////////////////////////////////
 // processorsConfigs->envAssetsPath(*) : the env assets destination path
 ////////////////////////////////////////////////////////////////
+Class EnvsAssetsProcessor extends Processor {
 
-$envAssetsPath = @$projectCfg->processorsConfigs->envAssetsPath;
-$unsetItems = getUnsetItems($envAssetsPath);
-if(!empty($unsetItems)) fatalAndNotify($notifyDests,$logger,"Config properties are not all set :",$unsetItems);
+    ////////////////////////////////////////////////////////////////
+    public function run() {
 
-$envAssetsPathSource = implodePath(ENV_ASSETS_PATH,$owner,$repo,$env);
-if(!is_dir($envAssetsPathSource)) fatalAndNotify($notifyDests,$logger,"Envs assets source folder does not exist ",$envAssetsPathSource);
+        $envAssetsPath = @$this->projectCfg->processorsConfigs->envAssetsPath;
+        $unsetItems = $this->getUnsetItems(get_defined_vars(),"envAssetsPath");
+        if(!empty($unsetItems)) $this->fatalAndNotify("Config properties are not all set :",$unsetItems);
 
-$options = "-r";
-if(DEBUG) $options.="v";
-$result = run("cp",$options,$envAssetsPathSource,implodePath($repoClonePath,$envAssetsPath));
-if(!$result["success"]) fatalAndNotify($notifyDests,$logger,"Can't copy env assets files",$result["output"]);
-if(DEBUG) appendToLog($logger,LG_INFO,"Files copied",$result["output"]);
+        $envAssetsPathSource = implodePath(ENV_ASSETS_PATH,$this->owner,$this->repo,$this->env);
+        if(!is_dir($envAssetsPathSource)) $this->fatalAndNotify("Envs assets source folder does not exist ",$envAssetsPathSource);
+
+        $options = "-r";
+        if(DEBUG) $options.="v";
+        $result = run("cp",$options,$envAssetsPathSource,implodePath($this->repoClonePath,$envAssetsPath));
+        if(!$result["success"]) $this->fatalAndNotify("Can't copy env assets files",$result["output"]);
+        if(DEBUG) $this->appendToLog(LG_INFO,"Files copied",$result["output"]);
+        
+    }
+}
 
 ?>

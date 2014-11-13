@@ -2,6 +2,7 @@
 
 ////////////////////////////////////////////////////////////////
 require_once __DIR__."/../libs/tools.php";
+require_once __DIR__."/../libs/main-processor.php";
 
 /////////////////////////////////////////////////////////////////
 // SLIM CONFIG AND MIDDLEWARES
@@ -18,7 +19,6 @@ $app->error(function (\Exception $e) use ($app) {
 $app->notFound(function () use ($app) {
     $app->halt(404, json_encode("Not found"));
 });
-
 
 /////////////////////////////////////////////////////////////////
 // ROUTES
@@ -125,7 +125,9 @@ $app->post("/repos/:owner/:repo/hook", function($owner, $repo) use ($app) {
     $commitSHA = $result["content"]->object->sha;
 
     appendToLog("api",LG_INFO,"Processing now ...",$owner,$repo,implodePath(PROCESSORS_PATH,"main.php"));
-    include implodePath(PROCESSORS_PATH,"main.php");
+    $mainProcessor = new MainProcessor($owner, $repo, $tagName, $tagSHA, $commitSHA);
+    $mainProcessor->initEnv();
+    $mainProcessor->run();
 });
 
 /////////////////////////////////////////////////////////////////
