@@ -1,5 +1,5 @@
-/api/config.php
-/api/libs/vendor
+/configs/config.php
+/libs/vendor
 /clones
 
 #################################################################################

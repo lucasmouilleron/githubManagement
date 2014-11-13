@@ -15,11 +15,12 @@ Features
 Architecture
 ------------
 - `api` : the public API
-- `configs` : projects config files
+- `configs` : global config and projects config files
+- `clones` : temporary repos clones (clones for building then copying to `web`)
 - `envs-assets` : projects env specific assets
+- `libs` : libs
 - `locks`: the locks folder
 - `processors` : the processors
-- `clones` : temporary repos clones (clones for building then copying to `web`)
 
 Users management
 ----------------
@@ -30,7 +31,7 @@ Users management
 Triggering
 ----------
 - Tag name syntax : `.*--deploy==ENV==TARGET`
-- ENVs are defined in `$PROCESSOR_AVAILABLE_ENVS` in `api/config.php`
+- ENVs are defined in `$PROCESSOR_AVAILABLE_ENVS` in `configs/config.php`
 - If target is ommited, target = "default"
 - The tag must be created on the master branch
 - Wheter the tag is created from the API or from a local repo (and then pushed), the processing will be triggered
@@ -92,11 +93,11 @@ Install requirements
 
 Install
 -------
-- `cd api && composer install`
-- `mv api/config.php.sample api/config.php`
-- edit the `api/config.php` file :
+- `composer install`
+- `mv configs/config.php.sample configs/config.php`
+- edit the `configs/config.php` file :
 	- change `API_PRIVATE_KEY` to a random string
-	- set `APACHE_HOME` to an existing folder and make sure Apache can write in it (or `sudo mkdir /ghm-tmp && sudo chmod -R 777 /ghm-tmp` (the `APACHE_HOME` folder, defined in `api/config.php`)
+	- set `APACHE_HOME` to an existing folder and make sure Apache can write in it (or `sudo mkdir /ghm-tmp && sudo chmod -R 777 /ghm-tmp` (the `APACHE_HOME` folder, defined in `configs/config.php`)
 	- set `ENV_PATH` so it contains all binaries that might be called from processors (rsync, scp, git), or build files (npm, grunt, etc.)
 	- `API_URL` is where your api is publicly http available
 	- set `DEBUG` to `false` in production mode
