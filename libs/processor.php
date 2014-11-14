@@ -37,8 +37,13 @@ abstract class Processor {
     }
 
     ////////////////////////////////////////////////////////////////
-    public function pushNotifyMessage($message) {
-        array_push($this->notifyMessages, $message);
+    public function addNotifyMessage($message) {
+        $this->mainProcessor->notifyMessages[]=$message;
+    }
+
+    ////////////////////////////////////////////////////////////////
+    public function getNotifyMessages() {
+        return $this->mainProcessor->notifyMessages;
     }
 
     ////////////////////////////////////////////////////////////////
@@ -51,14 +56,14 @@ abstract class Processor {
     ////////////////////////////////////////////////////////////////
     public function fatalAndNotify($messages) {
         $args = func_get_args();
-        array_unshift($args,$this->notifyMessages, $this->logger);
+        array_unshift($args,$this->notifyDests,$this->logger);
         call_user_func_array("fatalAndNotify", $args);
     }
 
     ////////////////////////////////////////////////////////////////
     public function appendToLogAndNotify($level,$messages) {
         $args = func_get_args();
-        array_unshift($args,$this->notifyMessages, $this->logger);
+        array_unshift($args,$this->notifyDests,$this->logger);
         call_user_func_array("appendToLogAndNotify", $args);
     }
 

@@ -26,7 +26,7 @@ Class CloneHeadProcessor extends Processor {
         }
 
         $result = run("cd",$this->repoClonePath,"&&",GIT_PATH,"show","--pretty='format:'","--name-only","HEAD","|","sort","|","uniq");
-        if(is_array($result["output"])) $this->pushNotifyMessage(implodeBits(" : ","Pushed files",implode("\n\r",$result["output"])));
+        if(is_array($result["output"])) $this->addNotifyMessage(implodeBits(" : ","Pushed files",implode("\n\r",$result["output"])));
 
     }
 

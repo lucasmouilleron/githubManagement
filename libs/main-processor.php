@@ -62,7 +62,7 @@ class MainProcessor extends Processor {
     ////////////////////////////////////////////////////////////////
     public function run() {
         $this->appendToLog(LG_INFO,"Begining processing","owner",$this->owner,"repo",$this->repo,"tagName",$this->tagName,"tagSHA",$this->tagSHA,"commitSHA",$this->commitSHA,"env",$this->env,"target",$this->target);
-        $this->pushNotifyMessage(implodeBits(" / ","Processed : ","owner",$this->owner,"repo",$this->repo,"tagName",$this->tagName,"tagSHA",$this->tagSHA,"commitSHA",$this->commitSHA,"env",$this->env,"target",$this->target));
+        $this->addNotifyMessage(implodeBits(" / ","Processed : ","owner",$this->owner,"repo",$this->repo,"tagName",$this->tagName,"tagSHA",$this->tagSHA,"commitSHA",$this->commitSHA,"env",$this->env,"target",$this->target));
         $this->processors = $this->projectCfg->processors->{$this->target};
 
         if(!isset($this->processors)) {
@@ -92,7 +92,6 @@ class MainProcessor extends Processor {
         function managerError($errno, $errstr, $errfile, $errline) {
             if(!($errno && error_reporting())) return true;
             global $that;
-            var_dump($that);
             $that->fatalAndNotify("A script error append",$errno,$errstr,$errfile,$errline);
             die();
         }

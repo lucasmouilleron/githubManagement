@@ -56,7 +56,6 @@ function postAPI() {
 	$status = true;
 	if($request->status_code != 200 && $request->status_code != 201) $status = false;
 	$body = json_decode($request->body);
-	var_dump($body);
 	$status = $body->status;
 	$content = $body->content;
 	return array("status"=>$status,"content"=>$content);
